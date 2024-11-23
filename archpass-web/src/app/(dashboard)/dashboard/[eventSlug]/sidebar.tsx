@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { useEventItemQuery } from '@/queries/event-item';
 import { LayoutDashboard, Settings, Tickets, Users } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
@@ -12,7 +13,18 @@ export function DashboardSidebar() {
   return (
     <aside className="hidden md:flex flex-col w-64 bg-card text-card-foreground border-r min-h-screen">
       <div className="p-4">
-        <div className="text-2xl font-bold mb-6">ArchPass</div>
+        <Link href="/" className="flex items-center space-x-2 mb-6">
+          <Image
+            src="/archpass-logo-solid.png"
+            alt="ArchPass Logo"
+            width={32}
+            height={32}
+          />
+          <span className="text-xl">
+            <span className="font-semibold">Arch</span>Pass
+          </span>
+        </Link>
+
         <nav className="space-y-2">
           <Button
             variant="ghost"
