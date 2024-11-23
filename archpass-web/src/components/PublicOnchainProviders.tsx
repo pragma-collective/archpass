@@ -20,6 +20,12 @@ function OnchainProviders({ children }: Props) {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <OnchainKitProvider
+          config={{
+            appearance: {
+              mode: 'light',
+              theme: 'hacker',
+            },
+          }}
           apiKey={NEXT_PUBLIC_CDP_API_KEY}
           rpcUrl={RPC_URL}
           chain={base}

@@ -23,6 +23,12 @@ function OnchainProviders({ children, hideSmartWallet = false }: Props) {
           apiKey={NEXT_PUBLIC_CDP_API_KEY}
           rpcUrl={RPC_URL}
           chain={base}
+          config={{
+            appearance: {
+              mode: 'light',
+              theme: 'hacker',
+            },
+          }}
         >
           <RainbowKitProvider modalSize="compact">
             <AuthProvider>{children}</AuthProvider>

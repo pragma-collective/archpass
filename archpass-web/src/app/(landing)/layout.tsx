@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { NEXT_PUBLIC_URL } from '../../config';
 
-import '../global.css';
 import '@coinbase/onchainkit/styles.css';
+import '../global.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import LoginButton from '@/components/LoginButton';
 import dynamic from 'next/dynamic';
@@ -48,7 +48,7 @@ export default function RootLayout({
               <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                 <Link href="/" className="flex items-center space-x-2">
                   <Image
-                    src="/archpass-logo-white.svg"
+                    src="/archpass-logo-solid.png"
                     alt="ArchPass Logo"
                     width={32}
                     height={32}
