@@ -8,12 +8,12 @@ export default function SignupButton({
   console.log('REQUIRE_SIGNIN', requireSIWE);
   return requireSIWE ? (
     <WalletWrapper
-      className="ockConnectWallet_Container min-w-[90px] shrink bg-slate-200 text-[#030712] hover:bg-slate-300"
+      className="ockConnectWallet_Container min-w-[90px] shrink bg-slate-700 text-[#030712] hover:bg-slate-300"
       text="Sign up"
     />
   ) : (
     <PublicWalletWrapper
-      className="ockConnectWallet_Container min-w-[90px] shrink bg-slate-200 text-[#030712] hover:bg-slate-300"
+      className="ockConnectWallet_Container min-w-[90px] shrink bg-slate-700 text-[#030712] hover:bg-slate-300"
       text="Sign up"
     />
   );
