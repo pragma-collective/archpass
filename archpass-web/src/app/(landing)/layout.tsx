@@ -53,17 +53,13 @@ export default function RootLayout({
                     width={32}
                     height={32}
                   />
-                  <span className="text-xl font-semibold">ArchPass</span>
+                  <span className="text-xl">
+                    <span className="font-semibold">Arch</span>Pass
+                  </span>
                 </Link>
                 <nav className="">
                   <div className="flex items-center space-x-4">
                     <div className="hidden sm:flex space-x-4">
-                      <Link
-                        href="/events"
-                        className="hover:text-primary transition-colors"
-                      >
-                        Events
-                      </Link>
                       <Link
                         href="/about"
                         className="hover:text-primary transition-colors"

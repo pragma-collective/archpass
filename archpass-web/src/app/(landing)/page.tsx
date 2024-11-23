@@ -1,11 +1,9 @@
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -19,9 +17,6 @@ export default function Home() {
             Secure, transparent, and efficient event ticketing powered by
             blockchain technology.
           </p>
-          <Button size="lg" asChild={true}>
-            <Link href="/events">Explore Events</Link>
-          </Button>
         </section>
 
         <section className="grid md:grid-cols-3 gap-8">
