@@ -12,7 +12,7 @@ export function EventLayoutHeader() {
     <header className="container flex justify-between mx-auto py-6 px-4">
       <Link href="/" className="flex items-center space-x-2">
         <Image
-          src="/archpass-logo-white.svg"
+          src="/archpass-logo-solid.png"
           alt="ArchPass Logo"
           width={32}
           height={32}
