@@ -7,6 +7,9 @@ import '@rainbow-me/rainbowkit/styles.css';
 import LoginButton from '@/components/LoginButton';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
 
 const OnchainProviders = dynamic(
   () => import('@/components/OnchainProviders'),
