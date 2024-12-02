@@ -7,7 +7,7 @@ import (
 func main() {
 	r := adapter.Router()
 
-	go startIndexer()
+	//go startIndexer()
 	//go startWalletIndexer()
 	//go startTicketIndexer()
 
