@@ -8,6 +8,7 @@ type CreateTicketInput struct {
 	EventId         int    `json:"eventId"`
 	Quantity        int    `json:"quantity"`
 	MintPrice       string `json:"mintPrice"`
+	BaseTokenUri    string `json:"baseTokenUri"`
 	ImageUrl        string `json:"imageUrl"`
 	ContractAddress string `json:"contractAddress"`
 }

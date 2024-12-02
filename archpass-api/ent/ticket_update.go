@@ -161,6 +161,26 @@ func (tu *TicketUpdate) ClearImageURL() *TicketUpdate {
 	return tu
 }
 
+// SetBaseTokenURI sets the "base_token_uri" field.
+func (tu *TicketUpdate) SetBaseTokenURI(s string) *TicketUpdate {
+	tu.mutation.SetBaseTokenURI(s)
+	return tu
+}
+
+// SetNillableBaseTokenURI sets the "base_token_uri" field if the given value is not nil.
+func (tu *TicketUpdate) SetNillableBaseTokenURI(s *string) *TicketUpdate {
+	if s != nil {
+		tu.SetBaseTokenURI(*s)
+	}
+	return tu
+}
+
+// ClearBaseTokenURI clears the value of the "base_token_uri" field.
+func (tu *TicketUpdate) ClearBaseTokenURI() *TicketUpdate {
+	tu.mutation.ClearBaseTokenURI()
+	return tu
+}
+
 // SetContractAddress sets the "contract_address" field.
 func (tu *TicketUpdate) SetContractAddress(s string) *TicketUpdate {
 	tu.mutation.SetContractAddress(s)
@@ -372,6 +392,12 @@ func (tu *TicketUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tu.mutation.ImageURLCleared() {
 		_spec.ClearField(ticket.FieldImageURL, field.TypeString)
+	}
+	if value, ok := tu.mutation.BaseTokenURI(); ok {
+		_spec.SetField(ticket.FieldBaseTokenURI, field.TypeString, value)
+	}
+	if tu.mutation.BaseTokenURICleared() {
+		_spec.ClearField(ticket.FieldBaseTokenURI, field.TypeString)
 	}
 	if value, ok := tu.mutation.ContractAddress(); ok {
 		_spec.SetField(ticket.FieldContractAddress, field.TypeString, value)
@@ -603,6 +629,26 @@ func (tuo *TicketUpdateOne) SetNillableImageURL(s *string) *TicketUpdateOne {
 // ClearImageURL clears the value of the "image_url" field.
 func (tuo *TicketUpdateOne) ClearImageURL() *TicketUpdateOne {
 	tuo.mutation.ClearImageURL()
+	return tuo
+}
+
+// SetBaseTokenURI sets the "base_token_uri" field.
+func (tuo *TicketUpdateOne) SetBaseTokenURI(s string) *TicketUpdateOne {
+	tuo.mutation.SetBaseTokenURI(s)
+	return tuo
+}
+
+// SetNillableBaseTokenURI sets the "base_token_uri" field if the given value is not nil.
+func (tuo *TicketUpdateOne) SetNillableBaseTokenURI(s *string) *TicketUpdateOne {
+	if s != nil {
+		tuo.SetBaseTokenURI(*s)
+	}
+	return tuo
+}
+
+// ClearBaseTokenURI clears the value of the "base_token_uri" field.
+func (tuo *TicketUpdateOne) ClearBaseTokenURI() *TicketUpdateOne {
+	tuo.mutation.ClearBaseTokenURI()
 	return tuo
 }
 
@@ -847,6 +893,12 @@ func (tuo *TicketUpdateOne) sqlSave(ctx context.Context) (_node *Ticket, err err
 	}
 	if tuo.mutation.ImageURLCleared() {
 		_spec.ClearField(ticket.FieldImageURL, field.TypeString)
+	}
+	if value, ok := tuo.mutation.BaseTokenURI(); ok {
+		_spec.SetField(ticket.FieldBaseTokenURI, field.TypeString, value)
+	}
+	if tuo.mutation.BaseTokenURICleared() {
+		_spec.ClearField(ticket.FieldBaseTokenURI, field.TypeString)
 	}
 	if value, ok := tuo.mutation.ContractAddress(); ok {
 		_spec.SetField(ticket.FieldContractAddress, field.TypeString, value)

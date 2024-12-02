@@ -27,6 +27,8 @@ func (Ticket) Fields() []ent.Field {
 			Optional(),
 		field.String("image_url").
 			Optional(),
+		field.String("base_token_uri").
+			Optional(),
 		field.String("contract_address").
 			Optional(),
 		field.String("transaction_hash").

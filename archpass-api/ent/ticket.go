@@ -35,6 +35,8 @@ type Ticket struct {
 	TicketHash string `json:"ticket_hash,omitempty"`
 	// ImageURL holds the value of the "image_url" field.
 	ImageURL string `json:"image_url,omitempty"`
+	// BaseTokenURI holds the value of the "base_token_uri" field.
+	BaseTokenURI string `json:"base_token_uri,omitempty"`
 	// ContractAddress holds the value of the "contract_address" field.
 	ContractAddress string `json:"contract_address,omitempty"`
 	// TransactionHash holds the value of the "transaction_hash" field.
@@ -91,7 +93,7 @@ func (*Ticket) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case ticket.FieldID, ticket.FieldQuantity, ticket.FieldEventID:
 			values[i] = new(sql.NullInt64)
-		case ticket.FieldName, ticket.FieldDescription, ticket.FieldTicketSlug, ticket.FieldMintPrice, ticket.FieldTicketHash, ticket.FieldImageURL, ticket.FieldContractAddress, ticket.FieldTransactionHash, ticket.FieldBlockNumber:
+		case ticket.FieldName, ticket.FieldDescription, ticket.FieldTicketSlug, ticket.FieldMintPrice, ticket.FieldTicketHash, ticket.FieldImageURL, ticket.FieldBaseTokenURI, ticket.FieldContractAddress, ticket.FieldTransactionHash, ticket.FieldBlockNumber:
 			values[i] = new(sql.NullString)
 		case ticket.FieldCreatedAt, ticket.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -163,6 +165,12 @@ func (t *Ticket) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field image_url", values[i])
 			} else if value.Valid {
 				t.ImageURL = value.String
+			}
+		case ticket.FieldBaseTokenURI:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field base_token_uri", values[i])
+			} else if value.Valid {
+				t.BaseTokenURI = value.String
 			}
 		case ticket.FieldContractAddress:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -263,6 +271,9 @@ func (t *Ticket) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("image_url=")
 	builder.WriteString(t.ImageURL)
+	builder.WriteString(", ")
+	builder.WriteString("base_token_uri=")
+	builder.WriteString(t.BaseTokenURI)
 	builder.WriteString(", ")
 	builder.WriteString("contract_address=")
 	builder.WriteString(t.ContractAddress)

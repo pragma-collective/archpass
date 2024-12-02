@@ -56,6 +56,9 @@ func Router() *echo.Echo {
 	r.GET("/attendeeTicket.get", handler.GetAttendeeTickets)
 	r.GET("/eventTicket.get", handler.GetEventTicket)
 
+	// Ticket image generator
+	r.POST("/image.create", handler.GenerateTicketImage)
+
 	// Private routes
 	p := r.Group("")
 	p.Use(echojwt.WithConfig(config))

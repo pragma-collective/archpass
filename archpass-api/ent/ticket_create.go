@@ -88,6 +88,20 @@ func (tc *TicketCreate) SetNillableImageURL(s *string) *TicketCreate {
 	return tc
 }
 
+// SetBaseTokenURI sets the "base_token_uri" field.
+func (tc *TicketCreate) SetBaseTokenURI(s string) *TicketCreate {
+	tc.mutation.SetBaseTokenURI(s)
+	return tc
+}
+
+// SetNillableBaseTokenURI sets the "base_token_uri" field if the given value is not nil.
+func (tc *TicketCreate) SetNillableBaseTokenURI(s *string) *TicketCreate {
+	if s != nil {
+		tc.SetBaseTokenURI(*s)
+	}
+	return tc
+}
+
 // SetContractAddress sets the "contract_address" field.
 func (tc *TicketCreate) SetContractAddress(s string) *TicketCreate {
 	tc.mutation.SetContractAddress(s)
@@ -316,6 +330,10 @@ func (tc *TicketCreate) createSpec() (*Ticket, *sqlgraph.CreateSpec) {
 		_spec.SetField(ticket.FieldImageURL, field.TypeString, value)
 		_node.ImageURL = value
 	}
+	if value, ok := tc.mutation.BaseTokenURI(); ok {
+		_spec.SetField(ticket.FieldBaseTokenURI, field.TypeString, value)
+		_node.BaseTokenURI = value
+	}
 	if value, ok := tc.mutation.ContractAddress(); ok {
 		_spec.SetField(ticket.FieldContractAddress, field.TypeString, value)
 		_node.ContractAddress = value
@@ -532,6 +550,24 @@ func (u *TicketUpsert) UpdateImageURL() *TicketUpsert {
 // ClearImageURL clears the value of the "image_url" field.
 func (u *TicketUpsert) ClearImageURL() *TicketUpsert {
 	u.SetNull(ticket.FieldImageURL)
+	return u
+}
+
+// SetBaseTokenURI sets the "base_token_uri" field.
+func (u *TicketUpsert) SetBaseTokenURI(v string) *TicketUpsert {
+	u.Set(ticket.FieldBaseTokenURI, v)
+	return u
+}
+
+// UpdateBaseTokenURI sets the "base_token_uri" field to the value that was provided on create.
+func (u *TicketUpsert) UpdateBaseTokenURI() *TicketUpsert {
+	u.SetExcluded(ticket.FieldBaseTokenURI)
+	return u
+}
+
+// ClearBaseTokenURI clears the value of the "base_token_uri" field.
+func (u *TicketUpsert) ClearBaseTokenURI() *TicketUpsert {
+	u.SetNull(ticket.FieldBaseTokenURI)
 	return u
 }
 
@@ -783,6 +819,27 @@ func (u *TicketUpsertOne) UpdateImageURL() *TicketUpsertOne {
 func (u *TicketUpsertOne) ClearImageURL() *TicketUpsertOne {
 	return u.Update(func(s *TicketUpsert) {
 		s.ClearImageURL()
+	})
+}
+
+// SetBaseTokenURI sets the "base_token_uri" field.
+func (u *TicketUpsertOne) SetBaseTokenURI(v string) *TicketUpsertOne {
+	return u.Update(func(s *TicketUpsert) {
+		s.SetBaseTokenURI(v)
+	})
+}
+
+// UpdateBaseTokenURI sets the "base_token_uri" field to the value that was provided on create.
+func (u *TicketUpsertOne) UpdateBaseTokenURI() *TicketUpsertOne {
+	return u.Update(func(s *TicketUpsert) {
+		s.UpdateBaseTokenURI()
+	})
+}
+
+// ClearBaseTokenURI clears the value of the "base_token_uri" field.
+func (u *TicketUpsertOne) ClearBaseTokenURI() *TicketUpsertOne {
+	return u.Update(func(s *TicketUpsert) {
+		s.ClearBaseTokenURI()
 	})
 }
 
@@ -1211,6 +1268,27 @@ func (u *TicketUpsertBulk) UpdateImageURL() *TicketUpsertBulk {
 func (u *TicketUpsertBulk) ClearImageURL() *TicketUpsertBulk {
 	return u.Update(func(s *TicketUpsert) {
 		s.ClearImageURL()
+	})
+}
+
+// SetBaseTokenURI sets the "base_token_uri" field.
+func (u *TicketUpsertBulk) SetBaseTokenURI(v string) *TicketUpsertBulk {
+	return u.Update(func(s *TicketUpsert) {
+		s.SetBaseTokenURI(v)
+	})
+}
+
+// UpdateBaseTokenURI sets the "base_token_uri" field to the value that was provided on create.
+func (u *TicketUpsertBulk) UpdateBaseTokenURI() *TicketUpsertBulk {
+	return u.Update(func(s *TicketUpsert) {
+		s.UpdateBaseTokenURI()
+	})
+}
+
+// ClearBaseTokenURI clears the value of the "base_token_uri" field.
+func (u *TicketUpsertBulk) ClearBaseTokenURI() *TicketUpsertBulk {
+	return u.Update(func(s *TicketUpsert) {
+		s.ClearBaseTokenURI()
 	})
 }
 

@@ -95,6 +95,11 @@ func ImageURL(v string) predicate.Ticket {
 	return predicate.Ticket(sql.FieldEQ(FieldImageURL, v))
 }
 
+// BaseTokenURI applies equality check predicate on the "base_token_uri" field. It's identical to BaseTokenURIEQ.
+func BaseTokenURI(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldEQ(FieldBaseTokenURI, v))
+}
+
 // ContractAddress applies equality check predicate on the "contract_address" field. It's identical to ContractAddressEQ.
 func ContractAddress(v string) predicate.Ticket {
 	return predicate.Ticket(sql.FieldEQ(FieldContractAddress, v))
@@ -588,6 +593,81 @@ func ImageURLEqualFold(v string) predicate.Ticket {
 // ImageURLContainsFold applies the ContainsFold predicate on the "image_url" field.
 func ImageURLContainsFold(v string) predicate.Ticket {
 	return predicate.Ticket(sql.FieldContainsFold(FieldImageURL, v))
+}
+
+// BaseTokenURIEQ applies the EQ predicate on the "base_token_uri" field.
+func BaseTokenURIEQ(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldEQ(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURINEQ applies the NEQ predicate on the "base_token_uri" field.
+func BaseTokenURINEQ(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldNEQ(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURIIn applies the In predicate on the "base_token_uri" field.
+func BaseTokenURIIn(vs ...string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldIn(FieldBaseTokenURI, vs...))
+}
+
+// BaseTokenURINotIn applies the NotIn predicate on the "base_token_uri" field.
+func BaseTokenURINotIn(vs ...string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldNotIn(FieldBaseTokenURI, vs...))
+}
+
+// BaseTokenURIGT applies the GT predicate on the "base_token_uri" field.
+func BaseTokenURIGT(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldGT(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURIGTE applies the GTE predicate on the "base_token_uri" field.
+func BaseTokenURIGTE(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldGTE(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURILT applies the LT predicate on the "base_token_uri" field.
+func BaseTokenURILT(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldLT(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURILTE applies the LTE predicate on the "base_token_uri" field.
+func BaseTokenURILTE(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldLTE(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURIContains applies the Contains predicate on the "base_token_uri" field.
+func BaseTokenURIContains(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldContains(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURIHasPrefix applies the HasPrefix predicate on the "base_token_uri" field.
+func BaseTokenURIHasPrefix(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldHasPrefix(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURIHasSuffix applies the HasSuffix predicate on the "base_token_uri" field.
+func BaseTokenURIHasSuffix(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldHasSuffix(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURIIsNil applies the IsNil predicate on the "base_token_uri" field.
+func BaseTokenURIIsNil() predicate.Ticket {
+	return predicate.Ticket(sql.FieldIsNull(FieldBaseTokenURI))
+}
+
+// BaseTokenURINotNil applies the NotNil predicate on the "base_token_uri" field.
+func BaseTokenURINotNil() predicate.Ticket {
+	return predicate.Ticket(sql.FieldNotNull(FieldBaseTokenURI))
+}
+
+// BaseTokenURIEqualFold applies the EqualFold predicate on the "base_token_uri" field.
+func BaseTokenURIEqualFold(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldEqualFold(FieldBaseTokenURI, v))
+}
+
+// BaseTokenURIContainsFold applies the ContainsFold predicate on the "base_token_uri" field.
+func BaseTokenURIContainsFold(v string) predicate.Ticket {
+	return predicate.Ticket(sql.FieldContainsFold(FieldBaseTokenURI, v))
 }
 
 // ContractAddressEQ applies the EQ predicate on the "contract_address" field.
