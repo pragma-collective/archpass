@@ -100,7 +100,8 @@ export function CreateTicketModal({
         quantity: Number(formValues.quantity),
         mintPrice: formValues.mintPrice,
         contractAddress: ticketAddress,
-        imageUrl: '',
+        imageUrl: 'placeholder',
+        baseTokenUri: 'placeholder',
       };
 
       createTicket(payload).then(() => {
