@@ -11,4 +11,5 @@ type IEventRepository interface {
 	GetBySlugAndOrganizerId(slug string, userId int) (ent.Event, error)
 	GetBySlug(eventSlug string) (ent.Event, error)
 	GetByEventHash(hash string) (ent.Event, error)
+	GetById(id int) (ent.Event, error)
 }

@@ -12,4 +12,5 @@ type ITicketRepository interface {
 	GetByAttendee(walletAddress string) (ent.Attendees, error)
 	GetByContractAddress(walletAddress string) (ent.Ticket, error)
 	GetByTicketHash(hash string) (ent.Ticket, error)
+	UpdateBaseTokenUri(ticketId int, baseTokenUri string) (ent.Ticket, error)
 }

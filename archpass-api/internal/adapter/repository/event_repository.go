@@ -137,3 +137,16 @@ func (e *EventRepository) GetByEventHash(hash string) (ent.Event, error) {
 
 	return *event, nil
 }
+
+func (e *EventRepository) GetById(id int) (ent.Event, error) {
+	evt, err := e.client.Event.
+		Query().
+		Where(event.IDEQ(id)).
+		Only(*e.ctx)
+
+	if err != nil {
+		return ent.Event{}, err
+	}
+
+	return *evt, nil
+}

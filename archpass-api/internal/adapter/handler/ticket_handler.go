@@ -1,7 +1,11 @@
 package handler
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/garguelles/archpass/internal/application/service"
 	"net/http"
 	"strconv"
 
@@ -27,10 +31,65 @@ func CreateTicket(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}
+
 	ctx := context.Background()
 	ticketRepo := repository.NewTicketRepository(&ctx)
+	eventRepo := repository.NewEventRepository(&ctx)
+	s3Service, err := service.NewS3Service("archpass")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Retrieve event details
+	event, err := eventRepo.GetById(input.EventId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Generate ticket image
+	imageBuffer, err := generateTicket(event.Name, event.Location, event.Date, "[YOUR NAME]", input.Name)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Upload image
+	key := fmt.Sprintf("%d/%s", input.EventId, "ticket-image.png")
+	s3ImageUrl, err := s3Service.UploadFile(key, imageBuffer, "image/png")
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: err.Error()})
+	}
+	input.ImageUrl = s3ImageUrl
 
 	ticket, err := ticketRepo.Create(input, claims.Id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Create intial metadata
+	// todo(jhudiel) - should this get updated, everytime we update the event details
+	metadata := map[string]interface{}{
+		"name":        ticket.Name,
+		"description": ticket.Description,
+		"image":       s3ImageUrl,
+		"attributes": map[string]interface{}{
+			"eventName":     event.Name,
+			"eventLocation": event.Location,
+			"eventDate":     event.Date,
+		},
+	}
+	metadataBytes, err := json.Marshal(metadata)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: "Failed to create metadata"})
+	}
+	metadataKey := fmt.Sprintf("%d/%d/metadata.json", input.EventId, ticket.ID)
+	metadataBuffer := bytes.NewBuffer(metadataBytes)
+	s3MetadataUrl, err := s3Service.UploadFile(metadataKey, metadataBuffer, "application/json")
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Update ticket with baseTokenUri
+	_, err = ticketRepo.UpdateBaseTokenUri(ticket.ID, s3MetadataUrl)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}
