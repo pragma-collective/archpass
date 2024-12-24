@@ -4,11 +4,11 @@ import { NEXT_PUBLIC_URL } from '../../config';
 import '@coinbase/onchainkit/styles.css';
 import '../global.css';
 import '@rainbow-me/rainbowkit/styles.css';
-import LoginButton from '@/components/LoginButton';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Inter } from 'next/font/google';
 import Image from 'next/image';
+import Menu from './menu';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -57,31 +57,7 @@ export default function RootLayout({
                     <span className="font-semibold">Arch</span>Pass
                   </span>
                 </Link>
-                <nav className="">
-                  <div className="flex items-center space-x-4">
-                    <div className="hidden sm:flex space-x-4">
-                      <Link
-                        href="/about"
-                        className="hover:text-primary transition-colors"
-                      >
-                        About
-                      </Link>
-                      <Link
-                        href="/contact"
-                        className="hover:text-primary transition-colors"
-                      >
-                        Contact
-                      </Link>
-                    </div>
-                    <LoginButton />
-                    {/*<Button variant="outline" asChild>
-                  <Link href="/login">Login</Link>
-                </Button>
-                  <Button asChild>
-                    <Link href="/signup">Sign up</Link>
-                  </Button>*/}
-                  </div>
-                </nav>
+                <Menu />
               </div>
             </header>
             {children}

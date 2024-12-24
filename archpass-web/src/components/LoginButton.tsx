@@ -5,7 +5,6 @@ import WalletWrapper from './WalletWrapper';
 export default function LoginButton({
   requireSIWE = true,
 }: { requireSIWE?: boolean }) {
-  console.log('REQUIRE', requireSIWE);
   return requireSIWE ? (
     <WalletWrapper
       className="min-w-[90px]"
