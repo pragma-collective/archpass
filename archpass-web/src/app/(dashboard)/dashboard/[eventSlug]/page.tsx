@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -55,19 +55,25 @@ export default function EventDashboard() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{event?.name} Dashboard</h1>
-        <EditEventModal
-          event={{
-            name: event?.name,
-            description: event?.description,
-            location: event?.location,
-            eventDate: event?.date,
-            headerImage: 'demo',
-          }}
-          onEventUpdated={handleEventUpdate}
-        />
-        <Link href={`/events/${event?.eventSlug}`}>View event</Link>
+        <div className="flex gap-4 items-center">
+          <EditEventModal
+            event={{
+              name: event?.name,
+              description: event?.description,
+              location: event?.location,
+              eventDate: event?.date,
+              headerImage: 'demo',
+            }}
+            onEventUpdated={handleEventUpdate}
+          />
+          <Link
+            className={buttonVariants({ variant: 'outline' })}
+            href={`/events/${event?.eventSlug}`}
+          >
+            View event
+          </Link>
+        </div>
       </div>
-
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
