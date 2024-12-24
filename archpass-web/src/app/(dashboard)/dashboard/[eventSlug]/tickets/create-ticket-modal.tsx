@@ -10,9 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AP_EVENT_FACTORY_CONTRACT_ADDRESS } from '@/config';
 import { BASE_SEPOLIA_CHAIN_ID, eventFactoryABI } from '@/constants';
-import { useUpload } from '@/hooks/useUpload';
 import { useCreateTicketMutation } from '@/queries/create-ticket';
-import { useCreateTicketImageMutation } from '@/queries/create-ticket-image';
 import type { TEvent } from '@/types';
 import {
   Transaction,
@@ -46,9 +44,7 @@ export function CreateTicketModal({
   event,
   refetchTicketList,
 }: CreateTicketModalProps) {
-  const { mutateAsync } = useCreateTicketMutation();
-  const { mutateAsync: createImage } = useCreateTicketImageMutation();
-  const { upload } = useUpload();
+  const { mutateAsync: createTicket } = useCreateTicketMutation();
 
   const [open, setOpen] = useState(false);
   const [contracts, setContracts] = useState<ContractFunctionParameters[]>([]);
@@ -107,26 +103,13 @@ export function CreateTicketModal({
         imageUrl: '',
       };
 
-      const imageBlob = await createImage({
-        eventName: event.name,
-        eventLocation: event.location,
-        eventDate: event.date,
-        attendeeName: '[YOUR NAME]',
-        ticketName: payload.name.toUpperCase(),
-      });
-
-      const uploadResponse = await upload({
-        image: imageBlob as File,
-      });
-      payload.imageUrl = uploadResponse?.imageURI as string;
-
-      mutateAsync(payload).then(() => {
+      createTicket(payload).then(() => {
         setOpen(false);
         reset();
         refetchTicketList();
       });
     },
-    [getValues, mutateAsync],
+    [getValues, createTicket],
   );
 
   return (
