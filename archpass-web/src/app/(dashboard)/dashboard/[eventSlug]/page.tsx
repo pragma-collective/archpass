@@ -21,6 +21,7 @@ import {
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { EditEventModal } from './edit-event-modal';
+import Link from 'next/link';
 
 // Mock data (in a real app, this would come from an API or database)
 const initialEventData = {
@@ -64,6 +65,7 @@ export default function EventDashboard() {
           }}
           onEventUpdated={handleEventUpdate}
         />
+        <Link href={`/events/${event?.eventSlug}`}>View event</Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
