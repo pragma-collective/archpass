@@ -1,6 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { useEventItemQuery } from '@/queries/event-item';
-import { LayoutDashboard, Settings, Tickets, Users } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Settings,
+  Tickets,
+  Users,
+  ClipboardList,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -44,6 +50,17 @@ export function DashboardSidebar() {
             <Link href={`/dashboard/${event?.eventSlug}/tickets`}>
               <Tickets className="mr-2 h-4 w-4" />
               Tickets
+            </Link>
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            asChild={true}
+          >
+            <Link href={`/dashboard/${event?.eventSlug}/orders`}>
+              <ClipboardList className="mr-2 h-4 w-4" />
+              Orders
             </Link>
           </Button>
 
