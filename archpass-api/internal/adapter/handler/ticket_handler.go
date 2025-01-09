@@ -1,9 +1,7 @@
 package handler
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/garguelles/archpass/internal/application/service"
 	"net/http"
@@ -35,7 +33,7 @@ func CreateTicket(c echo.Context) error {
 	ctx := context.Background()
 	ticketRepo := repository.NewTicketRepository(&ctx)
 	eventRepo := repository.NewEventRepository(&ctx)
-	s3Service, err := service.NewS3Service("archpass")
+	irysService, err := service.NewIrysService()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}
@@ -52,44 +50,52 @@ func CreateTicket(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}
 
-	// Upload image
+	// Upload image.
 	key := fmt.Sprintf("%d/%s", input.EventId, "ticket-image.png")
-	s3ImageUrl, err := s3Service.UploadFile(key, imageBuffer, "image/png")
+	imageUrl, err := irysService.UploadFile(key, imageBuffer, "image/png")
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: err.Error()})
 	}
-	input.ImageUrl = s3ImageUrl
+	input.ImageUrl = imageUrl
 
 	ticket, err := ticketRepo.Create(input, claims.Id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}
 
-	// Create intial metadata
-	// todo(jhudiel) - should this get updated, everytime we update the event details
-	metadata := map[string]interface{}{
-		"name":        ticket.Name,
-		"description": ticket.Description,
-		"image":       s3ImageUrl,
-		"attributes": map[string]interface{}{
-			"eventName":     event.Name,
-			"eventLocation": event.Location,
-			"eventDate":     event.Date,
+	metadata := service.MetadataInput{
+		Name:        ticket.Name,
+		Description: ticket.Description,
+		Image:       imageUrl,
+		Attributes: []map[string]interface{}{
+			{
+				"trait_type": "eventName",
+				"value":      event.Name,
+			},
+			{
+				"trait_type": "eventLocation",
+				"value":      event.Location,
+			},
+			{
+				"trait_type": "eventDate",
+				"value":      event.Date,
+			},
 		},
+		Version: "1.0",
 	}
-	metadataBytes, err := json.Marshal(metadata)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: "Failed to create metadata"})
-	}
-	metadataKey := fmt.Sprintf("%d/%d/metadata.json", input.EventId, ticket.ID)
-	metadataBuffer := bytes.NewBuffer(metadataBytes)
-	s3MetadataUrl, err := s3Service.UploadFile(metadataKey, metadataBuffer, "application/json")
+	metadataUrl, err := irysService.UploadMetadata(metadata)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: err.Error()})
 	}
 
+	// Update token uri for ticket
+	_, err = ticketRepo.UpdateBaseTokenUri(ticket.ID, metadataUrl)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
 	// Update ticket with baseTokenUri
-	_, err = ticketRepo.UpdateBaseTokenUri(ticket.ID, s3MetadataUrl)
+	_, err = ticketRepo.UpdateBaseTokenUri(ticket.ID, metadataUrl)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}

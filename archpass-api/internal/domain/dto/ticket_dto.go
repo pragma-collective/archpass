@@ -39,6 +39,7 @@ type PublicTicket struct {
 	MintPrice       string `json:"mintPrice"`
 	ContractAddress string `json:"contractAddress"`
 	ImageUrl        string `json:"imageUrl"`
+	BaseTokenUri    string `json:"baseTokenUri"`
 }
 
 type SimplePublicTicket struct {

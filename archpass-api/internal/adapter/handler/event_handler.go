@@ -84,6 +84,7 @@ func ListDashboardEvents(c echo.Context) error {
 			EventSlug:       event.EventSlug,
 			Location:        event.Location,
 			ContractAddress: event.ContractAddress,
+			// todo(jhudiel) - Use this after properly parsing the start date and end date instead of string.
 			// StartDate:  event.StartDate,
 			// EndDate:    event.EndDate,
 			Date:       event.Date,
@@ -168,6 +169,7 @@ func GetEvent(c echo.Context) error {
 			MintPrice:       ticket.MintPrice,
 			ContractAddress: ticket.ContractAddress,
 			ImageUrl:        ticket.ImageURL,
+			BaseTokenUri:    ticket.BaseTokenURI,
 		})
 	}
 

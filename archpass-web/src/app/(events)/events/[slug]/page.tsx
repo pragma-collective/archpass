@@ -35,7 +35,6 @@ import {
   TransactionStatusAction,
   TransactionStatusLabel,
 } from '@coinbase/onchainkit/transaction';
-
 // This would typically come from a database or API
 const eventData = {
   id: 'eth2024',
@@ -130,21 +129,20 @@ export default function EventPage({ params }: { params: { slug: string } }) {
     });
   };
 
-  useEffect(() => {
-    console.log('THE CONTRACT', selectedTicketContract);
-  }, []);
-
   let mintPrice = event?.tickets.find(
     (t: TTicket) => t.contractAddress === selectedTicketContract,
   )?.mintPrice;
   mintPrice = mintPrice ? parseEther(mintPrice) : 0n;
+  let baseTokenUri = event?.tickets.find(
+    (t: TTicket) => t.contractAddress === selectedTicketContract,
+  )?.baseTokenUri;
 
   const contracts = [
     {
       address: event?.contractAddress as Address,
       abi: eventABI,
       functionName: 'mintNFT',
-      args: [selectedTicketContract, 'test'],
+      args: [selectedTicketContract, baseTokenUri],
       value: mintPrice,
     },
   ];

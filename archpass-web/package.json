@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@coinbase/onchainkit": "^0.35.5",
+    "@irys/upload": "^0.0.14",
+    "@irys/upload-ethereum": "^0.0.14",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
@@ -27,7 +29,7 @@
     "@radix-ui/react-radio-group": "^1.2.1",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
-    "@web3-storage/w3up-client": "^16.4.1",
+    "@web3-storage/w3up-client": "^16.0.0",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -41,7 +43,8 @@
     "react-hook-form": "^7.53.2",
     "siwe": "^2.3.2",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "w3name": "^1.0.9"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.0",
