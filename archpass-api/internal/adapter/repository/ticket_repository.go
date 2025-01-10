@@ -186,3 +186,16 @@ func (t *TicketRepository) GetByTicketHash(hash string) (ent.Ticket, error) {
 
 	return *ticket, nil
 }
+
+func (t *TicketRepository) UpdateBaseTokenUri(ticketId int, baseTokenUri string) (ent.Ticket, error) {
+	ticket, err := t.client.Ticket.
+		UpdateOneID(ticketId).
+		SetBaseTokenURI(baseTokenUri).
+		Save(*t.ctx)
+
+	if err != nil {
+		return ent.Ticket{}, err
+	}
+
+	return *ticket, nil
+}

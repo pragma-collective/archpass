@@ -29,8 +29,7 @@ export default function TicketsPage() {
       return;
     }
 
-    const httpsUrl = convertIpfsToHttps(imageUrl);
-    window.open(httpsUrl, '_blank');
+    window.open(imageUrl, '_blank');
   };
 
   return (

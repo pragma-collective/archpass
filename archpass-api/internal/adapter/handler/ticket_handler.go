@@ -2,6 +2,8 @@ package handler
 
 import (
 	"context"
+	"fmt"
+	"github.com/garguelles/archpass/internal/application/service"
 	"net/http"
 	"strconv"
 
@@ -27,10 +29,73 @@ func CreateTicket(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}
+
 	ctx := context.Background()
 	ticketRepo := repository.NewTicketRepository(&ctx)
+	eventRepo := repository.NewEventRepository(&ctx)
+	irysService, err := service.NewIrysService()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Retrieve event details
+	event, err := eventRepo.GetById(input.EventId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Generate ticket image
+	imageBuffer, err := generateTicket(event.Name, event.Location, event.Date, "[YOUR NAME]", input.Name)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Upload image.
+	key := fmt.Sprintf("%d/%s", input.EventId, "ticket-image.png")
+	imageUrl, err := irysService.UploadFile(key, imageBuffer, "image/png")
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: err.Error()})
+	}
+	input.ImageUrl = imageUrl
 
 	ticket, err := ticketRepo.Create(input, claims.Id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	metadata := service.MetadataInput{
+		Name:        ticket.Name,
+		Description: ticket.Description,
+		Image:       imageUrl,
+		Attributes: []map[string]interface{}{
+			{
+				"trait_type": "eventName",
+				"value":      event.Name,
+			},
+			{
+				"trait_type": "eventLocation",
+				"value":      event.Location,
+			},
+			{
+				"trait_type": "eventDate",
+				"value":      event.Date,
+			},
+		},
+		Version: "1.0",
+	}
+	metadataUrl, err := irysService.UploadMetadata(metadata)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Update token uri for ticket
+	_, err = ticketRepo.UpdateBaseTokenUri(ticket.ID, metadataUrl)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
+	}
+
+	// Update ticket with baseTokenUri
+	_, err = ticketRepo.UpdateBaseTokenUri(ticket.ID, metadataUrl)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}
