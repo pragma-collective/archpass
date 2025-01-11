@@ -15,6 +15,11 @@ type IrysService struct {
 	token   string
 }
 
+type UploadResult struct {
+	ID  string
+	URL string
+}
+
 type MetadataInput struct {
 	Name        string                   `json:"name"`
 	Description string                   `json:"description"`
@@ -41,28 +46,28 @@ func NewIrysService() (*IrysService, error) {
 	}, nil
 }
 
-func (s *IrysService) UploadFile(key string, body *bytes.Buffer, contentType string) (string, error) {
+func (s *IrysService) UploadFile(key string, body *bytes.Buffer, contentType string) (UploadResult, error) {
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
 
 	fw, err := w.CreateFormFile("file", key)
 	if err != nil {
-		return "", fmt.Errorf("failed to create form file: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to create form file: %v", err)
 	}
 
 	if _, err = io.Copy(fw, body); err != nil {
-		return "", fmt.Errorf("failed to copy file: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to copy file: %v", err)
 	}
 
 	if err := w.WriteField("contentType", contentType); err != nil {
-		return "", fmt.Errorf("failed to write content type: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to write content type: %v", err)
 	}
 
 	w.Close()
 	fmt.Println(fmt.Sprintf("%s/api/upload-image", s.baseUrl))
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/upload-image", s.baseUrl), &b)
 	if err != nil {
-		return "", fmt.Errorf("failed to create request: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to create request: %v", err)
 	}
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -71,40 +76,44 @@ func (s *IrysService) UploadFile(key string, body *bytes.Buffer, contentType str
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("failed to send request: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to send request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("upload failed with status: %d", resp.StatusCode)
+		return UploadResult{}, fmt.Errorf("upload failed with status: %d", resp.StatusCode)
 	}
 
 	var result struct {
 		Success bool   `json:"success"`
 		Url     string `json:"url"`
+		Id      string `json:"id"`
 		Error   string `json:"error"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", fmt.Errorf("failed to decode response: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to decode response: %v", err)
 	}
 
 	if !result.Success {
-		return "", fmt.Errorf("upload failed: %s", result.Error)
+		return UploadResult{}, fmt.Errorf("upload failed: %s", result.Error)
 	}
 
-	return result.Url, nil
+	return UploadResult{
+		ID:  result.Id,
+		URL: result.Url,
+	}, nil
 }
 
-func (s *IrysService) UploadMetadata(metadata MetadataInput) (string, error) {
+func (s *IrysService) UploadMetadata(metadata MetadataInput) (UploadResult, error) {
 	jsonData, err := json.Marshal(metadata)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal metadata: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to marshal metadata: %v", err)
 	}
 
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/upload-json", s.baseUrl), bytes.NewBuffer(jsonData))
 	if err != nil {
-		return "", fmt.Errorf("failed to create request: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to create request: %v", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -113,27 +122,31 @@ func (s *IrysService) UploadMetadata(metadata MetadataInput) (string, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("failed to send request: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to send request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("upload failed with status: %d", resp.StatusCode)
+		return UploadResult{}, fmt.Errorf("upload failed with status: %d", resp.StatusCode)
 	}
 
 	var result struct {
 		Success bool   `json:"success"`
 		Url     string `json:"url"`
+		Id      string `json:"id"`
 		Error   string `json:"error"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", fmt.Errorf("failed to decode response: %v", err)
+		return UploadResult{}, fmt.Errorf("failed to decode response: %v", err)
 	}
 
 	if !result.Success {
-		return "", fmt.Errorf("upload failed: %s", result.Error)
+		return UploadResult{}, fmt.Errorf("upload failed: %s", result.Error)
 	}
 
-	return result.Url, nil
+	return UploadResult{
+		ID:  result.Id,
+		URL: result.Url,
+	}, nil
 }
