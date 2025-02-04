@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/garguelles/archpass/internal/adapter/repository"
-	"github.com/garguelles/archpass/internal/domain/dto"
+	"github.com/pragma-collective/archpass/internal/adapter/repository"
+	"github.com/pragma-collective/archpass/internal/domain/dto"
 	"log"
 	"os"
 	"strconv"
@@ -13,8 +13,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/garguelles/archpass/internal/application/contract"
 	"github.com/joho/godotenv"
+	"github.com/pragma-collective/archpass/internal/application/contract"
 )
 
 func startIndexer() {

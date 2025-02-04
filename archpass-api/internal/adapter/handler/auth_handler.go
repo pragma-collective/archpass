@@ -8,12 +8,12 @@ import (
 	"os"
 
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/garguelles/archpass/ent"
-	"github.com/garguelles/archpass/internal/adapter/repository"
-	"github.com/garguelles/archpass/internal/domain/dto"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/pragma-collective/archpass/ent"
+	"github.com/pragma-collective/archpass/internal/adapter/repository"
+	"github.com/pragma-collective/archpass/internal/domain/dto"
 	"github.com/spruceid/siwe-go"
 )
 

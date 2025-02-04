@@ -53,5 +53,6 @@ func (Event) Edges() []ent.Edge {
 			Required(),
 		edge.To("tickets", Ticket.Type),
 		edge.To("attendees", Attendee.Type),
+		edge.To("orders", Order.Type),
 	}
 }

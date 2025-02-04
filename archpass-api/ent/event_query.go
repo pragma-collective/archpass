@@ -12,11 +12,12 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/garguelles/archpass/ent/attendee"
-	"github.com/garguelles/archpass/ent/event"
-	"github.com/garguelles/archpass/ent/predicate"
-	"github.com/garguelles/archpass/ent/ticket"
-	"github.com/garguelles/archpass/ent/user"
+	"github.com/pragma-collective/archpass/ent/attendee"
+	"github.com/pragma-collective/archpass/ent/event"
+	"github.com/pragma-collective/archpass/ent/order"
+	"github.com/pragma-collective/archpass/ent/predicate"
+	"github.com/pragma-collective/archpass/ent/ticket"
+	"github.com/pragma-collective/archpass/ent/user"
 )
 
 // EventQuery is the builder for querying Event entities.
@@ -29,6 +30,7 @@ type EventQuery struct {
 	withUser      *UserQuery
 	withTickets   *TicketQuery
 	withAttendees *AttendeeQuery
+	withOrders    *OrderQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -124,6 +126,28 @@ func (eq *EventQuery) QueryAttendees() *AttendeeQuery {
 			sqlgraph.From(event.Table, event.FieldID, selector),
 			sqlgraph.To(attendee.Table, attendee.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, event.AttendeesTable, event.AttendeesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(eq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOrders chains the current query on the "orders" edge.
+func (eq *EventQuery) QueryOrders() *OrderQuery {
+	query := (&OrderClient{config: eq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := eq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := eq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(event.Table, event.FieldID, selector),
+			sqlgraph.To(order.Table, order.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, event.OrdersTable, event.OrdersColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(eq.driver.Dialect(), step)
 		return fromU, nil
@@ -326,6 +350,7 @@ func (eq *EventQuery) Clone() *EventQuery {
 		withUser:      eq.withUser.Clone(),
 		withTickets:   eq.withTickets.Clone(),
 		withAttendees: eq.withAttendees.Clone(),
+		withOrders:    eq.withOrders.Clone(),
 		// clone intermediate query.
 		sql:  eq.sql.Clone(),
 		path: eq.path,
@@ -362,6 +387,17 @@ func (eq *EventQuery) WithAttendees(opts ...func(*AttendeeQuery)) *EventQuery {
 		opt(query)
 	}
 	eq.withAttendees = query
+	return eq
+}
+
+// WithOrders tells the query-builder to eager-load the nodes that are connected to
+// the "orders" edge. The optional arguments are used to configure the query builder of the edge.
+func (eq *EventQuery) WithOrders(opts ...func(*OrderQuery)) *EventQuery {
+	query := (&OrderClient{config: eq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	eq.withOrders = query
 	return eq
 }
 
@@ -443,10 +479,11 @@ func (eq *EventQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Event,
 	var (
 		nodes       = []*Event{}
 		_spec       = eq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			eq.withUser != nil,
 			eq.withTickets != nil,
 			eq.withAttendees != nil,
+			eq.withOrders != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -484,6 +521,13 @@ func (eq *EventQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Event,
 		if err := eq.loadAttendees(ctx, query, nodes,
 			func(n *Event) { n.Edges.Attendees = []*Attendee{} },
 			func(n *Event, e *Attendee) { n.Edges.Attendees = append(n.Edges.Attendees, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := eq.withOrders; query != nil {
+		if err := eq.loadOrders(ctx, query, nodes,
+			func(n *Event) { n.Edges.Orders = []*Order{} },
+			func(n *Event, e *Order) { n.Edges.Orders = append(n.Edges.Orders, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -564,6 +608,36 @@ func (eq *EventQuery) loadAttendees(ctx context.Context, query *AttendeeQuery, n
 	}
 	query.Where(predicate.Attendee(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(event.AttendeesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.EventID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "event_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (eq *EventQuery) loadOrders(ctx context.Context, query *OrderQuery, nodes []*Event, init func(*Event), assign func(*Event, *Order)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Event)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(order.FieldEventID)
+	}
+	query.Where(predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(event.OrdersColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

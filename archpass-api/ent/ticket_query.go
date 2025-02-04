@@ -12,10 +12,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/garguelles/archpass/ent/attendee"
-	"github.com/garguelles/archpass/ent/event"
-	"github.com/garguelles/archpass/ent/predicate"
-	"github.com/garguelles/archpass/ent/ticket"
+	"github.com/pragma-collective/archpass/ent/attendee"
+	"github.com/pragma-collective/archpass/ent/event"
+	"github.com/pragma-collective/archpass/ent/order"
+	"github.com/pragma-collective/archpass/ent/predicate"
+	"github.com/pragma-collective/archpass/ent/ticket"
 )
 
 // TicketQuery is the builder for querying Ticket entities.
@@ -27,6 +28,7 @@ type TicketQuery struct {
 	predicates    []predicate.Ticket
 	withEvent     *EventQuery
 	withAttendees *AttendeeQuery
+	withOrders    *OrderQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -100,6 +102,28 @@ func (tq *TicketQuery) QueryAttendees() *AttendeeQuery {
 			sqlgraph.From(ticket.Table, ticket.FieldID, selector),
 			sqlgraph.To(attendee.Table, attendee.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, ticket.AttendeesTable, ticket.AttendeesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOrders chains the current query on the "orders" edge.
+func (tq *TicketQuery) QueryOrders() *OrderQuery {
+	query := (&OrderClient{config: tq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := tq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := tq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(ticket.Table, ticket.FieldID, selector),
+			sqlgraph.To(order.Table, order.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ticket.OrdersTable, ticket.OrdersColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -301,6 +325,7 @@ func (tq *TicketQuery) Clone() *TicketQuery {
 		predicates:    append([]predicate.Ticket{}, tq.predicates...),
 		withEvent:     tq.withEvent.Clone(),
 		withAttendees: tq.withAttendees.Clone(),
+		withOrders:    tq.withOrders.Clone(),
 		// clone intermediate query.
 		sql:  tq.sql.Clone(),
 		path: tq.path,
@@ -326,6 +351,17 @@ func (tq *TicketQuery) WithAttendees(opts ...func(*AttendeeQuery)) *TicketQuery 
 		opt(query)
 	}
 	tq.withAttendees = query
+	return tq
+}
+
+// WithOrders tells the query-builder to eager-load the nodes that are connected to
+// the "orders" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *TicketQuery) WithOrders(opts ...func(*OrderQuery)) *TicketQuery {
+	query := (&OrderClient{config: tq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withOrders = query
 	return tq
 }
 
@@ -407,9 +443,10 @@ func (tq *TicketQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Ticke
 	var (
 		nodes       = []*Ticket{}
 		_spec       = tq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			tq.withEvent != nil,
 			tq.withAttendees != nil,
+			tq.withOrders != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -439,6 +476,13 @@ func (tq *TicketQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Ticke
 	if query := tq.withAttendees; query != nil {
 		if err := tq.loadAttendees(ctx, query, nodes, nil,
 			func(n *Ticket, e *Attendee) { n.Edges.Attendees = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := tq.withOrders; query != nil {
+		if err := tq.loadOrders(ctx, query, nodes,
+			func(n *Ticket) { n.Edges.Orders = []*Order{} },
+			func(n *Ticket, e *Order) { n.Edges.Orders = append(n.Edges.Orders, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -486,6 +530,36 @@ func (tq *TicketQuery) loadAttendees(ctx context.Context, query *AttendeeQuery, 
 	}
 	query.Where(predicate.Attendee(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(ticket.AttendeesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TicketID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "ticket_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (tq *TicketQuery) loadOrders(ctx context.Context, query *OrderQuery, nodes []*Ticket, init func(*Ticket), assign func(*Ticket, *Order)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Ticket)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(order.FieldTicketID)
+	}
+	query.Where(predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(ticket.OrdersColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

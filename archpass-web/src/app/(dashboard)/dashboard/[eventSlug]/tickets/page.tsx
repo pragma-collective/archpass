@@ -9,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { convertIpfsToHttps } from '@/lib/utils';
 import { useEventItemQuery } from '@/queries/event-item';
 import { useTicketListQuery } from '@/queries/ticket-list';
 import type { TTicket } from '@/types';

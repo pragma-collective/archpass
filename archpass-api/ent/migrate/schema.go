@@ -85,6 +85,43 @@ var (
 			},
 		},
 	}
+	// OrdersColumns holds the columns for the "orders" table.
+	OrdersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "wallet_address", Type: field.TypeString},
+		{Name: "price_in_cents", Type: field.TypeInt64},
+		{Name: "cc_checkout_id", Type: field.TypeUUID},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "modified_at", Type: field.TypeTime},
+		{Name: "payment_reference", Type: field.TypeString, Nullable: true},
+		{Name: "payment_wallet_address", Type: field.TypeString, Nullable: true},
+		{Name: "payment_transaction_hash", Type: field.TypeString, Nullable: true},
+		{Name: "token_id", Type: field.TypeInt, Nullable: true},
+		{Name: "mint_transaction_hash", Type: field.TypeString, Nullable: true},
+		{Name: "transfer_transaction_hash", Type: field.TypeString, Nullable: true},
+		{Name: "event_id", Type: field.TypeInt},
+		{Name: "ticket_id", Type: field.TypeInt},
+	}
+	// OrdersTable holds the schema information for the "orders" table.
+	OrdersTable = &schema.Table{
+		Name:       "orders",
+		Columns:    OrdersColumns,
+		PrimaryKey: []*schema.Column{OrdersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "orders_events_orders",
+				Columns:    []*schema.Column{OrdersColumns[12]},
+				RefColumns: []*schema.Column{EventsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "orders_tickets_orders",
+				Columns:    []*schema.Column{OrdersColumns[13]},
+				RefColumns: []*schema.Column{TicketsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// TicketsColumns holds the columns for the "tickets" table.
 	TicketsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -157,6 +194,7 @@ var (
 	Tables = []*schema.Table{
 		AttendeesTable,
 		EventsTable,
+		OrdersTable,
 		TicketsTable,
 		TransactionsTable,
 		UsersTable,
@@ -168,5 +206,7 @@ func init() {
 	AttendeesTable.ForeignKeys[1].RefTable = TicketsTable
 	AttendeesTable.ForeignKeys[2].RefTable = UsersTable
 	EventsTable.ForeignKeys[0].RefTable = UsersTable
+	OrdersTable.ForeignKeys[0].RefTable = EventsTable
+	OrdersTable.ForeignKeys[1].RefTable = TicketsTable
 	TicketsTable.ForeignKeys[0].RefTable = EventsTable
 }

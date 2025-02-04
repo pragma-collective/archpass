@@ -11,10 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/garguelles/archpass/ent/attendee"
-	"github.com/garguelles/archpass/ent/event"
-	"github.com/garguelles/archpass/ent/predicate"
-	"github.com/garguelles/archpass/ent/ticket"
+	"github.com/pragma-collective/archpass/ent/attendee"
+	"github.com/pragma-collective/archpass/ent/event"
+	"github.com/pragma-collective/archpass/ent/order"
+	"github.com/pragma-collective/archpass/ent/predicate"
+	"github.com/pragma-collective/archpass/ent/ticket"
 )
 
 // TicketUpdate is the builder for updating Ticket entities.
@@ -285,6 +286,21 @@ func (tu *TicketUpdate) SetAttendees(a *Attendee) *TicketUpdate {
 	return tu.SetAttendeesID(a.ID)
 }
 
+// AddOrderIDs adds the "orders" edge to the Order entity by IDs.
+func (tu *TicketUpdate) AddOrderIDs(ids ...int) *TicketUpdate {
+	tu.mutation.AddOrderIDs(ids...)
+	return tu
+}
+
+// AddOrders adds the "orders" edges to the Order entity.
+func (tu *TicketUpdate) AddOrders(o ...*Order) *TicketUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return tu.AddOrderIDs(ids...)
+}
+
 // Mutation returns the TicketMutation object of the builder.
 func (tu *TicketUpdate) Mutation() *TicketMutation {
 	return tu.mutation
@@ -300,6 +316,27 @@ func (tu *TicketUpdate) ClearEvent() *TicketUpdate {
 func (tu *TicketUpdate) ClearAttendees() *TicketUpdate {
 	tu.mutation.ClearAttendees()
 	return tu
+}
+
+// ClearOrders clears all "orders" edges to the Order entity.
+func (tu *TicketUpdate) ClearOrders() *TicketUpdate {
+	tu.mutation.ClearOrders()
+	return tu
+}
+
+// RemoveOrderIDs removes the "orders" edge to Order entities by IDs.
+func (tu *TicketUpdate) RemoveOrderIDs(ids ...int) *TicketUpdate {
+	tu.mutation.RemoveOrderIDs(ids...)
+	return tu
+}
+
+// RemoveOrders removes "orders" edges to Order entities.
+func (tu *TicketUpdate) RemoveOrders(o ...*Order) *TicketUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return tu.RemoveOrderIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -474,6 +511,51 @@ func (tu *TicketUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(attendee.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tu.mutation.OrdersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ticket.OrdersTable,
+			Columns: []string{ticket.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.RemovedOrdersIDs(); len(nodes) > 0 && !tu.mutation.OrdersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ticket.OrdersTable,
+			Columns: []string{ticket.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.OrdersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ticket.OrdersTable,
+			Columns: []string{ticket.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -756,6 +838,21 @@ func (tuo *TicketUpdateOne) SetAttendees(a *Attendee) *TicketUpdateOne {
 	return tuo.SetAttendeesID(a.ID)
 }
 
+// AddOrderIDs adds the "orders" edge to the Order entity by IDs.
+func (tuo *TicketUpdateOne) AddOrderIDs(ids ...int) *TicketUpdateOne {
+	tuo.mutation.AddOrderIDs(ids...)
+	return tuo
+}
+
+// AddOrders adds the "orders" edges to the Order entity.
+func (tuo *TicketUpdateOne) AddOrders(o ...*Order) *TicketUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return tuo.AddOrderIDs(ids...)
+}
+
 // Mutation returns the TicketMutation object of the builder.
 func (tuo *TicketUpdateOne) Mutation() *TicketMutation {
 	return tuo.mutation
@@ -771,6 +868,27 @@ func (tuo *TicketUpdateOne) ClearEvent() *TicketUpdateOne {
 func (tuo *TicketUpdateOne) ClearAttendees() *TicketUpdateOne {
 	tuo.mutation.ClearAttendees()
 	return tuo
+}
+
+// ClearOrders clears all "orders" edges to the Order entity.
+func (tuo *TicketUpdateOne) ClearOrders() *TicketUpdateOne {
+	tuo.mutation.ClearOrders()
+	return tuo
+}
+
+// RemoveOrderIDs removes the "orders" edge to Order entities by IDs.
+func (tuo *TicketUpdateOne) RemoveOrderIDs(ids ...int) *TicketUpdateOne {
+	tuo.mutation.RemoveOrderIDs(ids...)
+	return tuo
+}
+
+// RemoveOrders removes "orders" edges to Order entities.
+func (tuo *TicketUpdateOne) RemoveOrders(o ...*Order) *TicketUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return tuo.RemoveOrderIDs(ids...)
 }
 
 // Where appends a list predicates to the TicketUpdate builder.
@@ -975,6 +1093,51 @@ func (tuo *TicketUpdateOne) sqlSave(ctx context.Context) (_node *Ticket, err err
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(attendee.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tuo.mutation.OrdersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ticket.OrdersTable,
+			Columns: []string{ticket.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.RemovedOrdersIDs(); len(nodes) > 0 && !tuo.mutation.OrdersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ticket.OrdersTable,
+			Columns: []string{ticket.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.OrdersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ticket.OrdersTable,
+			Columns: []string{ticket.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

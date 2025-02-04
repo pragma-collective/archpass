@@ -16,6 +16,8 @@ type Tx struct {
 	Attendee *AttendeeClient
 	// Event is the client for interacting with the Event builders.
 	Event *EventClient
+	// Order is the client for interacting with the Order builders.
+	Order *OrderClient
 	// Ticket is the client for interacting with the Ticket builders.
 	Ticket *TicketClient
 	// Transaction is the client for interacting with the Transaction builders.
@@ -155,6 +157,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Attendee = NewAttendeeClient(tx.config)
 	tx.Event = NewEventClient(tx.config)
+	tx.Order = NewOrderClient(tx.config)
 	tx.Ticket = NewTicketClient(tx.config)
 	tx.Transaction = NewTransactionClient(tx.config)
 	tx.User = NewUserClient(tx.config)

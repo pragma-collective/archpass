@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/garguelles/archpass/ent"
+	"github.com/pragma-collective/archpass/ent"
 )
 
 // The AttendeeFunc type is an adapter to allow the use of ordinary
@@ -31,6 +31,18 @@ func (f EventFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EventMutation", m)
+}
+
+// The OrderFunc type is an adapter to allow the use of ordinary
+// function as Order mutator.
+type OrderFunc func(context.Context, *ent.OrderMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OrderFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OrderMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrderMutation", m)
 }
 
 // The TicketFunc type is an adapter to allow the use of ordinary

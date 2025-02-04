@@ -52,5 +52,6 @@ func (Ticket) Edges() []ent.Edge {
 			Unique().
 			Required(),
 		edge.To("attendees", Attendee.Type).Unique(),
+		edge.To("orders", Order.Type),
 	}
 }

@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/garguelles/archpass/internal/adapter/repository"
-	"github.com/garguelles/archpass/internal/domain/dto"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
+	"github.com/pragma-collective/archpass/internal/adapter/repository"
+	"github.com/pragma-collective/archpass/internal/domain/dto"
 )
 
 func CreateEvent(c echo.Context) error {

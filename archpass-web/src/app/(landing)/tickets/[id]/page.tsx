@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarIcon, MapPinIcon, UserIcon } from 'lucide-react';
+import { CalendarIcon, MapPinIcon, } from 'lucide-react';
 import Image from 'next/image';
 import { useEventTicketQuery } from '@/queries/event-ticket';
 import { convertIpfsToHttps } from '@/lib/utils';
@@ -16,10 +16,8 @@ const ticketData = {
   imageUrl: 'https://place-hold.it/600x400',
 };
 
-export default function TicketPage({
-  params,
-}: { params: { id: string } }) {
-  console.log(params)
+export default function TicketPage({ params }: { params: { id: string } }) {
+  console.log(params);
   const { ticket } = useEventTicketQuery(params?.id);
   console.log(ticket);
   return (

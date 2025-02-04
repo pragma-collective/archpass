@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/garguelles/archpass/internal/domain/dto"
+	"github.com/pragma-collective/archpass/internal/domain/dto"
 )
 
 type IAttendeeRepository interface {

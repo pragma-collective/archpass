@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '*.ipfs.w3s.link',
       },
+      {
+        protocol: 'https',
+        hostname: 'gateway.irys.xyz',
+      },
     ],
   },
 };

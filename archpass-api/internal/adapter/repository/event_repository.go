@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/garguelles/archpass/ent"
-	"github.com/garguelles/archpass/ent/event"
-	"github.com/garguelles/archpass/internal/adapter/database"
-	"github.com/garguelles/archpass/internal/application/utils"
-	"github.com/garguelles/archpass/internal/domain/dto"
-	"github.com/garguelles/archpass/internal/domain/repository"
+	"github.com/pragma-collective/archpass/ent"
+	"github.com/pragma-collective/archpass/ent/event"
+	"github.com/pragma-collective/archpass/internal/adapter/database"
+	"github.com/pragma-collective/archpass/internal/application/utils"
+	"github.com/pragma-collective/archpass/internal/domain/dto"
+	"github.com/pragma-collective/archpass/internal/domain/repository"
 )
 
 type EventRepository struct {
@@ -57,7 +57,6 @@ func (e *EventRepository) Create(input dto.CreateEventInput, userId int) (ent.Ev
 		return ent.Event{}, nil
 	}
 
-	fmt.Println(slug)
 	event, err := e.client.Event.
 		Create().
 		SetName(input.Name).

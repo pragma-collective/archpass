@@ -12,29 +12,17 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { BASE_SEPOLIA_CHAIN_ID, eventABI } from '@/constants';
 import { useUpload } from '@/hooks/useUpload';
-import { getSlicedAddress } from '@/lib/utils';
 import { useCreateTicketImageMutation } from '@/queries/create-ticket-image';
 import { usePublicEventItemQuery } from '@/queries/public-event-item';
 import type { TTicket } from '@/types';
-import type {
-  TransactionError,
-  TransactionResponse,
-} from '@coinbase/onchainkit/transaction';
-import { CalendarIcon, MapPinIcon, StarIcon, Ticket } from 'lucide-react';
+
+import { CalendarIcon, MapPinIcon, StarIcon, } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
-import { type Address, parseEther } from 'viem';
-import { useAccount, useWriteContract } from 'wagmi';
-import {
-  Transaction,
-  TransactionButton,
-  TransactionStatus,
-  TransactionStatusAction,
-  TransactionStatusLabel,
-} from '@coinbase/onchainkit/transaction';
+import { useState } from 'react';
+import { useAccount } from 'wagmi';
+
 // This would typically come from a database or API
 const eventData = {
   id: 'eth2024',
@@ -63,129 +51,36 @@ export default function EventPage({ params }: { params: { slug: string } }) {
   const { mutateAsync, isPending: isApiLoading } =
     useCreateTicketImageMutation();
   const { upload, isLoading } = useUpload();
-  const [selectedTicketContract, setSelectedTicketContract] =
-    useState<string>('');
-  const {
-    data: hash,
-    writeContract,
-    error: contractError,
-    isPending,
-  } = useWriteContract();
+  const [selectedTicketId, setSelectedTicketId] = useState<string>('');
 
-  const mintTicket = async () => {
-    if (!selectedTicketContract) {
-      return;
-    }
-
-    const ticket = event?.tickets.find(
-      (t: TTicket) => t.contractAddress === selectedTicketContract,
-    );
-
-    if (!ticket) {
-      return;
-    }
-
-    const imageBlob = await mutateAsync({
-      eventName: event.name,
-      eventLocation: event.location,
-      eventDate: event.date,
-      attendeeName: `${getSlicedAddress(address ?? '0x0')}`,
-      ticketName: ticket?.name?.toUpperCase(),
-    });
-
-    const uploadResponse = await upload({
-      image: imageBlob as File,
-      metadata: {
-        name: ticket?.name || '',
-        description: ticket?.description || '',
-        attributes: [
-          {
-            trait_type: 'eventName',
-            value: event.name,
-          },
-          {
-            trait_type: 'eventLocation',
-            value: event.location,
-          },
-          {
-            trait_type: 'eventDate',
-            value: event.date,
-          },
-        ],
-      },
-    });
-
-    if (!uploadResponse?.tokenURI) {
-      return;
-    }
-
-    writeContract({
-      address: event?.contractAddress as Address,
-      abi: eventABI,
-      functionName: 'mintNFT',
-      args: [selectedTicketContract as Address, uploadResponse?.tokenURI],
-      chainId: BASE_SEPOLIA_CHAIN_ID,
-      value: parseEther(ticket.mintPrice),
-    });
-  };
-
-  let mintPrice = event?.tickets.find(
-    (t: TTicket) => t.contractAddress === selectedTicketContract,
-  )?.mintPrice;
-  mintPrice = mintPrice ? parseEther(mintPrice) : 0n;
-  let baseTokenUri = event?.tickets.find(
-    (t: TTicket) => t.contractAddress === selectedTicketContract,
-  )?.baseTokenUri;
-
-  const contracts = [
-    {
-      address: event?.contractAddress as Address,
-      abi: eventABI,
-      functionName: 'mintNFT',
-      args: [selectedTicketContract, baseTokenUri],
-      value: mintPrice,
-    },
-  ];
-
-  // const t = async () => {
-  //   const ticket = event?.tickets.find(
-  //     (t: TTicket) => t.contractAddress === selectedTicketContract,
-  //   );
+  const selectedTicket = event?.tickets.find(
+    (t: TTicket) => t.contractAddress === selectedTicketId,
+  );
+  // let mintPrice = event?.tickets.find(
+  //   (t: TTicket) => t.contractAddress === selectedTicketContract,
+  // )?.mintPrice;
+  // mintPrice = mintPrice ? parseEther(mintPrice) : 0n;
+  // let baseTokenUri = event?.tickets.find(
+  //   (t: TTicket) => t.contractAddress === selectedTicketContract,
+  // )?.baseTokenUri;
   //
-  //   const imageBlob = await mutateAsync({
-  //     eventName: event.name,
-  //     eventLocation: event.location,
-  //     eventDate: event.date,
-  //     attendeeName: `[${getSlicedAddress(address)}]`,
-  //     ticketName: ticket?.name?.toUpperCase(),
-  //   });
+  // const contracts = [
+  //   {
+  //     address: event?.contractAddress as Address,
+  //     abi: eventABI,
+  //     functionName: 'mintNFT',
+  //     args: [selectedTicketContract, baseTokenUri],
+  //     value: mintPrice,
+  //   },
+  // ];
+
+  // const handleError = useCallback((err: TransactionError) => {
+  //   console.error('Transaction error:', err);
+  // }, []);
   //
-  //   const uploadResponse = await upload({
-  //     image: imageBlob as File,
-  //     metadata: {
-  //       name: ticket?.name || '',
-  //       description: ticket?.description || '',
-  //       attributes: [{
-  //         trait_type: "eventName",
-  //         value: event.name,
-  //       }, {
-  //         trait_type: "eventLocation",
-  //         value: event.location,
-  //       }, {
-  //         trait_type: "eventDate",
-  //         value: event.date,
-  //       }],
-  //     },
-  //   });
-  // }
-
-  const handleError = useCallback((err: TransactionError) => {
-    console.error('Transaction error:', err);
-  }, []);
-
-  const handleSuccess = useCallback(async (response: TransactionResponse) => {
-    console.log(response);
-  }, []);
+  // const handleSuccess = useCallback(async (response: TransactionResponse) => {
+  //   console.log(response);
+  // }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -271,7 +166,7 @@ export default function EventPage({ params }: { params: { slug: string } }) {
             <CardContent>
               <RadioGroup
                 onValueChange={(value: string) => {
-                  value && setSelectedTicketContract(value);
+                  value && setSelectedTicketId(value);
                 }}
                 defaultValue="general"
                 className="space-y-4"
@@ -279,11 +174,11 @@ export default function EventPage({ params }: { params: { slug: string } }) {
                 {event?.tickets.map((ticket: TTicket) => (
                   <div key={ticket.id} className="flex items-center space-x-2">
                     <RadioGroupItem
-                      value={ticket?.contractAddress}
-                      id={ticket.contractAddress}
+                      value={ticket?.contractAddress || ''}
+                      id={ticket.id?.toString()}
                     />
                     <Label
-                      htmlFor={ticket.contractAddress}
+                      htmlFor={ticket.id?.toString()}
                       className="flex justify-between w-full"
                     >
                       <span>{ticket?.name}</span>
@@ -294,21 +189,27 @@ export default function EventPage({ params }: { params: { slug: string } }) {
               </RadioGroup>
             </CardContent>
             <CardFooter>
-              <Transaction
-                contracts={contracts}
-                chainId={BASE_SEPOLIA_CHAIN_ID}
-                onError={handleError}
-                onSuccess={handleSuccess}
-              >
-                <TransactionButton
-                  text="Mint ticket"
-                  className="mt-0 mr-auto ml-auto max-w-full text-[white]"
-                />
-                <TransactionStatus>
-                  <TransactionStatusLabel />
-                  <TransactionStatusAction />
-                </TransactionStatus>
-              </Transaction>
+              {address ? (
+                <Link
+                  href={`/checkout?ticket=${btoa(`${selectedTicketId}|${selectedTicket?.imageUrl || ''}`)}`}
+                  passHref={true}
+                  legacyBehavior={true}
+                >
+                  <Button
+                    as="a"
+                    className="w-full"
+                    disabled={!selectedTicketId}
+                  >
+                    {selectedTicketId
+                      ? 'Proceed to Checkout'
+                      : 'Select a Ticket'}
+                  </Button>
+                </Link>
+              ) : (
+                <p className="text-center text-sm text-muted-foreground">
+                  Please connect your wallet to purchase tickets.
+                </p>
+              )}
             </CardFooter>
           </Card>
         </div>

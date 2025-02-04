@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/garguelles/archpass/internal/adapter/handler"
-	"github.com/garguelles/archpass/internal/domain/dto"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/pragma-collective/archpass/internal/adapter/handler"
+	"github.com/pragma-collective/archpass/internal/domain/dto"
 )
 
 func init() {
@@ -56,8 +56,14 @@ func Router() *echo.Echo {
 	r.GET("/attendeeTicket.get", handler.GetAttendeeTickets)
 	r.GET("/eventTicket.get", handler.GetEventTicket)
 
-	// Ticket image generator
-	r.POST("/image.create", handler.GenerateTicketImage)
+	// Checkout
+	r.POST("/checkout.create", handler.CreateCheckout)
+
+	// Order
+	r.GET("/order.get", handler.PublicGetOrder)
+
+	// Webhooks
+	r.POST("/coinbase.webhook", handler.CoinbaseWebhook)
 
 	// Private routes
 	p := r.Group("")
