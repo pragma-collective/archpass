@@ -1,15 +1,16 @@
 package main
 
 import (
-	"github.com/garguelles/archpass/internal/adapter"
+	"github.com/pragma-collective/archpass/internal/adapter"
 )
 
 func main() {
 	r := adapter.Router()
 
-	//go startIndexer()
-	//go startWalletIndexer()
-	//go startTicketIndexer()
+	// Start the ticket minter service
+	// note(jhudiel) - don't enable yet
+	// need to implement a processing status
+	//go startTicketMinter()
 
 	r.Logger.Fatal(r.Start(":8000"))
 }

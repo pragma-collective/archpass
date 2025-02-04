@@ -5,11 +5,12 @@ package ent
 import (
 	"time"
 
-	"github.com/garguelles/archpass/ent/attendee"
-	"github.com/garguelles/archpass/ent/event"
-	"github.com/garguelles/archpass/ent/schema"
-	"github.com/garguelles/archpass/ent/ticket"
-	"github.com/garguelles/archpass/ent/user"
+	"github.com/pragma-collective/archpass/ent/attendee"
+	"github.com/pragma-collective/archpass/ent/event"
+	"github.com/pragma-collective/archpass/ent/order"
+	"github.com/pragma-collective/archpass/ent/schema"
+	"github.com/pragma-collective/archpass/ent/ticket"
+	"github.com/pragma-collective/archpass/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -42,6 +43,18 @@ func init() {
 	event.DefaultModifiedAt = eventDescModifiedAt.Default.(func() time.Time)
 	// event.UpdateDefaultModifiedAt holds the default value on update for the modified_at field.
 	event.UpdateDefaultModifiedAt = eventDescModifiedAt.UpdateDefault.(func() time.Time)
+	orderFields := schema.Order{}.Fields()
+	_ = orderFields
+	// orderDescCreatedAt is the schema descriptor for created_at field.
+	orderDescCreatedAt := orderFields[5].Descriptor()
+	// order.DefaultCreatedAt holds the default value on creation for the created_at field.
+	order.DefaultCreatedAt = orderDescCreatedAt.Default.(func() time.Time)
+	// orderDescModifiedAt is the schema descriptor for modified_at field.
+	orderDescModifiedAt := orderFields[6].Descriptor()
+	// order.DefaultModifiedAt holds the default value on creation for the modified_at field.
+	order.DefaultModifiedAt = orderDescModifiedAt.Default.(func() time.Time)
+	// order.UpdateDefaultModifiedAt holds the default value on update for the modified_at field.
+	order.UpdateDefaultModifiedAt = orderDescModifiedAt.UpdateDefault.(func() time.Time)
 	ticketFields := schema.Ticket{}.Fields()
 	_ = ticketFields
 	// ticketDescTicketSlug is the schema descriptor for ticket_slug field.

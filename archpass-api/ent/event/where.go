@@ -7,7 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/garguelles/archpass/ent/predicate"
+	"github.com/pragma-collective/archpass/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.
@@ -1101,6 +1101,29 @@ func HasAttendees() predicate.Event {
 func HasAttendeesWith(preds ...predicate.Attendee) predicate.Event {
 	return predicate.Event(func(s *sql.Selector) {
 		step := newAttendeesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrders applies the HasEdge predicate on the "orders" edge.
+func HasOrders() predicate.Event {
+	return predicate.Event(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrdersTable, OrdersColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrdersWith applies the HasEdge predicate on the "orders" edge with a given conditions (other predicates).
+func HasOrdersWith(preds ...predicate.Order) predicate.Event {
+	return predicate.Event(func(s *sql.Selector) {
+		step := newOrdersStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

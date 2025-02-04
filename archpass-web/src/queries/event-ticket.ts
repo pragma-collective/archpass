@@ -8,7 +8,7 @@ export function useEventTicketQuery(ticketSlug: string) {
     queryFn: async () => {
       const api = createAuthenticatedClient();
       const { data: eventItem } = await api.get(`/eventTicket.get`, {
-        params: { ticketSlug: ticketSlug},
+        params: { ticketSlug: ticketSlug },
       });
 
       return eventItem;

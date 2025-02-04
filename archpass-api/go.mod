@@ -1,11 +1,14 @@
-module github.com/garguelles/archpass
+module github.com/pragma-collective/archpass
 
 go 1.23.0
 
 require (
 	entgo.io/ent v0.14.1
+	github.com/aws/aws-sdk-go v1.55.5
 	github.com/ethereum/go-ethereum v1.14.11
+	github.com/fogleman/gg v1.3.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo-jwt/v4 v4.2.0
 	github.com/labstack/echo/v4 v4.12.0
@@ -19,7 +22,6 @@ require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
-	github.com/aws/aws-sdk-go v1.55.5 // indirect
 	github.com/bits-and-blooms/bitset v1.13.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4 // indirect
 	github.com/consensys/bavard v0.1.13 // indirect
@@ -31,14 +33,12 @@ require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
 	github.com/ethereum/c-kzg-4844 v1.0.0 // indirect
 	github.com/ethereum/go-verkle v0.1.1-0.20240829091221-dffa7562dbe9 // indirect
-	github.com/fogleman/gg v1.3.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/holiman/uint256 v1.3.1 // indirect

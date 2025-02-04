@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/garguelles/archpass/ent/transaction"
+	"github.com/pragma-collective/archpass/ent/transaction"
 )
 
 // Transaction is the model entity for the Transaction schema.

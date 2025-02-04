@@ -42,7 +42,9 @@ export default function DashboardLayout({
             {/* Main content */}
             <div className="flex-1">
               <header className="flex justify-between items-center bg-card text-card-foreground p-4 border-b">
-                {!showSidebar ? (
+                {showSidebar ? (
+                  <span />
+                ) : (
                   <Link href="/" className="flex items-center space-x-2">
                     <Image
                       src="/archpass-logo-solid.png"
@@ -54,8 +56,6 @@ export default function DashboardLayout({
                       <span className="font-semibold">Arch</span>Pass
                     </span>
                   </Link>
-                ) : (
-                  <span />
                 )}
                 <LoginButton />
               </header>

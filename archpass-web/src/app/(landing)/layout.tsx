@@ -42,7 +42,7 @@ export default function RootLayout({
       <body
         className={`bg-background items-center justify-center ${inter.className}`}
       >
-        <OnchainProviders hideSmartWallet>
+        <OnchainProviders hideSmartWallet={true}>
           <div className="min-h-screen bg-background text-foreground">
             <header className="container mx-auto py-6 px-4">
               <div className="container mx-auto px-4 py-4 flex justify-between items-center">

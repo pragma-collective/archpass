@@ -12,11 +12,12 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/garguelles/archpass/ent/attendee"
-	"github.com/garguelles/archpass/ent/event"
-	"github.com/garguelles/archpass/ent/ticket"
-	"github.com/garguelles/archpass/ent/transaction"
-	"github.com/garguelles/archpass/ent/user"
+	"github.com/pragma-collective/archpass/ent/attendee"
+	"github.com/pragma-collective/archpass/ent/event"
+	"github.com/pragma-collective/archpass/ent/order"
+	"github.com/pragma-collective/archpass/ent/ticket"
+	"github.com/pragma-collective/archpass/ent/transaction"
+	"github.com/pragma-collective/archpass/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -79,6 +80,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			attendee.Table:    attendee.ValidColumn,
 			event.Table:       event.ValidColumn,
+			order.Table:       order.ValidColumn,
 			ticket.Table:      ticket.ValidColumn,
 			transaction.Table: transaction.ValidColumn,
 			user.Table:        user.ValidColumn,

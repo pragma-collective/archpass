@@ -2,12 +2,12 @@ package repository
 
 import (
 	"context"
-	"github.com/garguelles/archpass/ent/transaction"
+	"github.com/pragma-collective/archpass/ent/transaction"
 
-	"github.com/garguelles/archpass/ent"
-	"github.com/garguelles/archpass/internal/adapter/database"
-	"github.com/garguelles/archpass/internal/domain/dto"
-	"github.com/garguelles/archpass/internal/domain/repository"
+	"github.com/pragma-collective/archpass/ent"
+	"github.com/pragma-collective/archpass/internal/adapter/database"
+	"github.com/pragma-collective/archpass/internal/domain/dto"
+	"github.com/pragma-collective/archpass/internal/domain/repository"
 )
 
 type TransactionRepository struct {

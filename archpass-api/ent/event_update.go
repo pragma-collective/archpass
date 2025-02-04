@@ -11,11 +11,12 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/garguelles/archpass/ent/attendee"
-	"github.com/garguelles/archpass/ent/event"
-	"github.com/garguelles/archpass/ent/predicate"
-	"github.com/garguelles/archpass/ent/ticket"
-	"github.com/garguelles/archpass/ent/user"
+	"github.com/pragma-collective/archpass/ent/attendee"
+	"github.com/pragma-collective/archpass/ent/event"
+	"github.com/pragma-collective/archpass/ent/order"
+	"github.com/pragma-collective/archpass/ent/predicate"
+	"github.com/pragma-collective/archpass/ent/ticket"
+	"github.com/pragma-collective/archpass/ent/user"
 )
 
 // EventUpdate is the builder for updating Event entities.
@@ -316,6 +317,21 @@ func (eu *EventUpdate) AddAttendees(a ...*Attendee) *EventUpdate {
 	return eu.AddAttendeeIDs(ids...)
 }
 
+// AddOrderIDs adds the "orders" edge to the Order entity by IDs.
+func (eu *EventUpdate) AddOrderIDs(ids ...int) *EventUpdate {
+	eu.mutation.AddOrderIDs(ids...)
+	return eu
+}
+
+// AddOrders adds the "orders" edges to the Order entity.
+func (eu *EventUpdate) AddOrders(o ...*Order) *EventUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return eu.AddOrderIDs(ids...)
+}
+
 // Mutation returns the EventMutation object of the builder.
 func (eu *EventUpdate) Mutation() *EventMutation {
 	return eu.mutation
@@ -367,6 +383,27 @@ func (eu *EventUpdate) RemoveAttendees(a ...*Attendee) *EventUpdate {
 		ids[i] = a[i].ID
 	}
 	return eu.RemoveAttendeeIDs(ids...)
+}
+
+// ClearOrders clears all "orders" edges to the Order entity.
+func (eu *EventUpdate) ClearOrders() *EventUpdate {
+	eu.mutation.ClearOrders()
+	return eu
+}
+
+// RemoveOrderIDs removes the "orders" edge to Order entities by IDs.
+func (eu *EventUpdate) RemoveOrderIDs(ids ...int) *EventUpdate {
+	eu.mutation.RemoveOrderIDs(ids...)
+	return eu
+}
+
+// RemoveOrders removes "orders" edges to Order entities.
+func (eu *EventUpdate) RemoveOrders(o ...*Order) *EventUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return eu.RemoveOrderIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -613,6 +650,51 @@ func (eu *EventUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(attendee.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if eu.mutation.OrdersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   event.OrdersTable,
+			Columns: []string{event.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := eu.mutation.RemovedOrdersIDs(); len(nodes) > 0 && !eu.mutation.OrdersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   event.OrdersTable,
+			Columns: []string{event.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := eu.mutation.OrdersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   event.OrdersTable,
+			Columns: []string{event.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -925,6 +1007,21 @@ func (euo *EventUpdateOne) AddAttendees(a ...*Attendee) *EventUpdateOne {
 	return euo.AddAttendeeIDs(ids...)
 }
 
+// AddOrderIDs adds the "orders" edge to the Order entity by IDs.
+func (euo *EventUpdateOne) AddOrderIDs(ids ...int) *EventUpdateOne {
+	euo.mutation.AddOrderIDs(ids...)
+	return euo
+}
+
+// AddOrders adds the "orders" edges to the Order entity.
+func (euo *EventUpdateOne) AddOrders(o ...*Order) *EventUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return euo.AddOrderIDs(ids...)
+}
+
 // Mutation returns the EventMutation object of the builder.
 func (euo *EventUpdateOne) Mutation() *EventMutation {
 	return euo.mutation
@@ -976,6 +1073,27 @@ func (euo *EventUpdateOne) RemoveAttendees(a ...*Attendee) *EventUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return euo.RemoveAttendeeIDs(ids...)
+}
+
+// ClearOrders clears all "orders" edges to the Order entity.
+func (euo *EventUpdateOne) ClearOrders() *EventUpdateOne {
+	euo.mutation.ClearOrders()
+	return euo
+}
+
+// RemoveOrderIDs removes the "orders" edge to Order entities by IDs.
+func (euo *EventUpdateOne) RemoveOrderIDs(ids ...int) *EventUpdateOne {
+	euo.mutation.RemoveOrderIDs(ids...)
+	return euo
+}
+
+// RemoveOrders removes "orders" edges to Order entities.
+func (euo *EventUpdateOne) RemoveOrders(o ...*Order) *EventUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return euo.RemoveOrderIDs(ids...)
 }
 
 // Where appends a list predicates to the EventUpdate builder.
@@ -1252,6 +1370,51 @@ func (euo *EventUpdateOne) sqlSave(ctx context.Context) (_node *Event, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(attendee.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if euo.mutation.OrdersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   event.OrdersTable,
+			Columns: []string{event.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := euo.mutation.RemovedOrdersIDs(); len(nodes) > 0 && !euo.mutation.OrdersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   event.OrdersTable,
+			Columns: []string{event.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := euo.mutation.OrdersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   event.OrdersTable,
+			Columns: []string{event.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

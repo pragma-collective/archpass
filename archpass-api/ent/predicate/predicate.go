@@ -12,6 +12,9 @@ type Attendee func(*sql.Selector)
 // Event is the predicate function for event builders.
 type Event func(*sql.Selector)
 
+// Order is the predicate function for order builders.
+type Order func(*sql.Selector)
+
 // Ticket is the predicate function for ticket builders.
 type Ticket func(*sql.Selector)
 

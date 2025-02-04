@@ -11,9 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/garguelles/archpass/ent/attendee"
-	"github.com/garguelles/archpass/ent/event"
-	"github.com/garguelles/archpass/ent/ticket"
+	"github.com/pragma-collective/archpass/ent/attendee"
+	"github.com/pragma-collective/archpass/ent/event"
+	"github.com/pragma-collective/archpass/ent/order"
+	"github.com/pragma-collective/archpass/ent/ticket"
 )
 
 // TicketCreate is the builder for creating a Ticket entity.
@@ -194,6 +195,21 @@ func (tc *TicketCreate) SetNillableAttendeesID(id *int) *TicketCreate {
 // SetAttendees sets the "attendees" edge to the Attendee entity.
 func (tc *TicketCreate) SetAttendees(a *Attendee) *TicketCreate {
 	return tc.SetAttendeesID(a.ID)
+}
+
+// AddOrderIDs adds the "orders" edge to the Order entity by IDs.
+func (tc *TicketCreate) AddOrderIDs(ids ...int) *TicketCreate {
+	tc.mutation.AddOrderIDs(ids...)
+	return tc
+}
+
+// AddOrders adds the "orders" edges to the Order entity.
+func (tc *TicketCreate) AddOrders(o ...*Order) *TicketCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return tc.AddOrderIDs(ids...)
 }
 
 // Mutation returns the TicketMutation object of the builder.
@@ -380,6 +396,22 @@ func (tc *TicketCreate) createSpec() (*Ticket, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(attendee.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := tc.mutation.OrdersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ticket.OrdersTable,
+			Columns: []string{ticket.OrdersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

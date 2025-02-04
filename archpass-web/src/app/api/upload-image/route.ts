@@ -1,5 +1,5 @@
-import { Uploader } from "@irys/upload";
-import { BaseEth } from "@irys/upload-ethereum";
+import { Uploader } from '@irys/upload';
+import { BaseEth } from '@irys/upload-ethereum';
 import type { NextRequest } from 'next/server';
 
 const getIrysUploader = async () => {
@@ -21,12 +21,12 @@ export async function POST(request: NextRequest) {
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'Unauthorized'
+          error: 'Unauthorized',
         }),
         {
           status: 401,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' },
+        },
       );
     }
 
@@ -38,20 +38,22 @@ export async function POST(request: NextRequest) {
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'No file provided'
+          error: 'No file provided',
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' },
+        },
       );
     }
 
     const irysUploader = await getIrysUploader();
-    const tags = [{
-      name: "Content-Type",
-      value: contentType || file.type,
-    }];
+    const tags = [
+      {
+        name: 'Content-Type',
+        value: contentType || file.type,
+      },
+    ];
 
     const fileBuffer = Buffer.from(await file.arrayBuffer());
     const receipt = await irysUploader.upload(fileBuffer, { tags });
@@ -60,28 +62,27 @@ export async function POST(request: NextRequest) {
       JSON.stringify({
         success: true,
         id: receipt.id,
-        url: `https://gateway.irys.xyz/${receipt.id}`
+        url: `https://gateway.irys.xyz/${receipt.id}`,
       }),
       {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
-
   } catch (e) {
-    console.error("Error: ", e);
+    console.error('Error: ', e);
     return new Response(
       JSON.stringify({
         success: false,
-        error: e.message
+        error: e.message,
       }),
       {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
   }
 }

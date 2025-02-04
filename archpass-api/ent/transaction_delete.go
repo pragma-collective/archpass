@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/garguelles/archpass/ent/predicate"
-	"github.com/garguelles/archpass/ent/transaction"
+	"github.com/pragma-collective/archpass/ent/predicate"
+	"github.com/pragma-collective/archpass/ent/transaction"
 )
 
 // TransactionDelete is the builder for deleting a Transaction entity.

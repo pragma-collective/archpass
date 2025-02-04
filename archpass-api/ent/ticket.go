@@ -9,9 +9,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/garguelles/archpass/ent/attendee"
-	"github.com/garguelles/archpass/ent/event"
-	"github.com/garguelles/archpass/ent/ticket"
+	"github.com/pragma-collective/archpass/ent/attendee"
+	"github.com/pragma-collective/archpass/ent/event"
+	"github.com/pragma-collective/archpass/ent/ticket"
 )
 
 // Ticket is the model entity for the Ticket schema.
@@ -59,9 +59,11 @@ type TicketEdges struct {
 	Event *Event `json:"event,omitempty"`
 	// Attendees holds the value of the attendees edge.
 	Attendees *Attendee `json:"attendees,omitempty"`
+	// Orders holds the value of the orders edge.
+	Orders []*Order `json:"orders,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // EventOrErr returns the Event value or an error if the edge
@@ -84,6 +86,15 @@ func (e TicketEdges) AttendeesOrErr() (*Attendee, error) {
 		return nil, &NotFoundError{label: attendee.Label}
 	}
 	return nil, &NotLoadedError{edge: "attendees"}
+}
+
+// OrdersOrErr returns the Orders value or an error if the edge
+// was not loaded in eager-loading.
+func (e TicketEdges) OrdersOrErr() ([]*Order, error) {
+	if e.loadedTypes[2] {
+		return e.Orders, nil
+	}
+	return nil, &NotLoadedError{edge: "orders"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -223,6 +234,11 @@ func (t *Ticket) QueryEvent() *EventQuery {
 // QueryAttendees queries the "attendees" edge of the Ticket entity.
 func (t *Ticket) QueryAttendees() *AttendeeQuery {
 	return NewTicketClient(t.config).QueryAttendees(t)
+}
+
+// QueryOrders queries the "orders" edge of the Ticket entity.
+func (t *Ticket) QueryOrders() *OrderQuery {
+	return NewTicketClient(t.config).QueryOrders(t)
 }
 
 // Update returns a builder for updating this Ticket.

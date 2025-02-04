@@ -1,19 +1,19 @@
 import { parse as didParse } from '@ipld/dag-ucan/did';
 import type { ServiceAbility } from '@web3-storage/capabilities/types';
-import * as Delegation from '@ucanto/core/delegation'
-import { CarReader } from '@ipld/car'
+import * as Delegation from '@ucanto/core/delegation';
+import { CarReader } from '@ipld/car';
 import { create } from '@web3-storage/w3up-client';
 import { Signer } from '@web3-storage/w3up-client/principal/ed25519';
 import { StoreMemory } from '@web3-storage/w3up-client/stores/memory';
 import type { NextRequest } from 'next/server';
 
 async function parseProof(data) {
-  const blocks = []
-  const reader = await CarReader.fromBytes(Buffer.from(data, 'base64'))
+  const blocks = [];
+  const reader = await CarReader.fromBytes(Buffer.from(data, 'base64'));
   for await (const block of reader.blocks()) {
-    blocks.push(block)
+    blocks.push(block);
   }
-  return Delegation.importDAG(blocks)
+  return Delegation.importDAG(blocks);
 }
 
 // TODO(jhudiel): Implement authentication
