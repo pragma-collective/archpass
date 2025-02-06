@@ -3712,34 +3712,36 @@ func (m *OrderMutation) ResetEdge(name string) error {
 // TicketMutation represents an operation that mutates the Ticket nodes in the graph.
 type TicketMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *int
-	name             *string
-	description      *string
-	ticket_slug      *string
-	mint_price       *string
-	quantity         *int
-	addquantity      *int
-	ticket_hash      *string
-	image_url        *string
-	base_token_uri   *string
-	contract_address *string
-	transaction_hash *string
-	block_number     *string
-	created_at       *time.Time
-	updated_at       *time.Time
-	clearedFields    map[string]struct{}
-	event            *int
-	clearedevent     bool
-	attendees        *int
-	clearedattendees bool
-	orders           map[int]struct{}
-	removedorders    map[int]struct{}
-	clearedorders    bool
-	done             bool
-	oldValue         func(context.Context) (*Ticket, error)
-	predicates       []predicate.Ticket
+	op                Op
+	typ               string
+	id                *int
+	name              *string
+	description       *string
+	ticket_slug       *string
+	mint_price        *string
+	price_in_cents    *int64
+	addprice_in_cents *int64
+	quantity          *int
+	addquantity       *int
+	ticket_hash       *string
+	image_url         *string
+	base_token_uri    *string
+	contract_address  *string
+	transaction_hash  *string
+	block_number      *string
+	created_at        *time.Time
+	updated_at        *time.Time
+	clearedFields     map[string]struct{}
+	event             *int
+	clearedevent      bool
+	attendees         *int
+	clearedattendees  bool
+	orders            map[int]struct{}
+	removedorders     map[int]struct{}
+	clearedorders     bool
+	done              bool
+	oldValue          func(context.Context) (*Ticket, error)
+	predicates        []predicate.Ticket
 }
 
 var _ ent.Mutation = (*TicketMutation)(nil)
@@ -3979,9 +3981,92 @@ func (m *TicketMutation) OldMintPrice(ctx context.Context) (v string, err error)
 	return oldValue.MintPrice, nil
 }
 
+// ClearMintPrice clears the value of the "mint_price" field.
+func (m *TicketMutation) ClearMintPrice() {
+	m.mint_price = nil
+	m.clearedFields[ticket.FieldMintPrice] = struct{}{}
+}
+
+// MintPriceCleared returns if the "mint_price" field was cleared in this mutation.
+func (m *TicketMutation) MintPriceCleared() bool {
+	_, ok := m.clearedFields[ticket.FieldMintPrice]
+	return ok
+}
+
 // ResetMintPrice resets all changes to the "mint_price" field.
 func (m *TicketMutation) ResetMintPrice() {
 	m.mint_price = nil
+	delete(m.clearedFields, ticket.FieldMintPrice)
+}
+
+// SetPriceInCents sets the "price_in_cents" field.
+func (m *TicketMutation) SetPriceInCents(i int64) {
+	m.price_in_cents = &i
+	m.addprice_in_cents = nil
+}
+
+// PriceInCents returns the value of the "price_in_cents" field in the mutation.
+func (m *TicketMutation) PriceInCents() (r int64, exists bool) {
+	v := m.price_in_cents
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPriceInCents returns the old "price_in_cents" field's value of the Ticket entity.
+// If the Ticket object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TicketMutation) OldPriceInCents(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPriceInCents is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPriceInCents requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPriceInCents: %w", err)
+	}
+	return oldValue.PriceInCents, nil
+}
+
+// AddPriceInCents adds i to the "price_in_cents" field.
+func (m *TicketMutation) AddPriceInCents(i int64) {
+	if m.addprice_in_cents != nil {
+		*m.addprice_in_cents += i
+	} else {
+		m.addprice_in_cents = &i
+	}
+}
+
+// AddedPriceInCents returns the value that was added to the "price_in_cents" field in this mutation.
+func (m *TicketMutation) AddedPriceInCents() (r int64, exists bool) {
+	v := m.addprice_in_cents
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearPriceInCents clears the value of the "price_in_cents" field.
+func (m *TicketMutation) ClearPriceInCents() {
+	m.price_in_cents = nil
+	m.addprice_in_cents = nil
+	m.clearedFields[ticket.FieldPriceInCents] = struct{}{}
+}
+
+// PriceInCentsCleared returns if the "price_in_cents" field was cleared in this mutation.
+func (m *TicketMutation) PriceInCentsCleared() bool {
+	_, ok := m.clearedFields[ticket.FieldPriceInCents]
+	return ok
+}
+
+// ResetPriceInCents resets all changes to the "price_in_cents" field.
+func (m *TicketMutation) ResetPriceInCents() {
+	m.price_in_cents = nil
+	m.addprice_in_cents = nil
+	delete(m.clearedFields, ticket.FieldPriceInCents)
 }
 
 // SetQuantity sets the "quantity" field.
@@ -4596,7 +4681,7 @@ func (m *TicketMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TicketMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.name != nil {
 		fields = append(fields, ticket.FieldName)
 	}
@@ -4608,6 +4693,9 @@ func (m *TicketMutation) Fields() []string {
 	}
 	if m.mint_price != nil {
 		fields = append(fields, ticket.FieldMintPrice)
+	}
+	if m.price_in_cents != nil {
+		fields = append(fields, ticket.FieldPriceInCents)
 	}
 	if m.quantity != nil {
 		fields = append(fields, ticket.FieldQuantity)
@@ -4655,6 +4743,8 @@ func (m *TicketMutation) Field(name string) (ent.Value, bool) {
 		return m.TicketSlug()
 	case ticket.FieldMintPrice:
 		return m.MintPrice()
+	case ticket.FieldPriceInCents:
+		return m.PriceInCents()
 	case ticket.FieldQuantity:
 		return m.Quantity()
 	case ticket.FieldEventID:
@@ -4692,6 +4782,8 @@ func (m *TicketMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldTicketSlug(ctx)
 	case ticket.FieldMintPrice:
 		return m.OldMintPrice(ctx)
+	case ticket.FieldPriceInCents:
+		return m.OldPriceInCents(ctx)
 	case ticket.FieldQuantity:
 		return m.OldQuantity(ctx)
 	case ticket.FieldEventID:
@@ -4748,6 +4840,13 @@ func (m *TicketMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMintPrice(v)
+		return nil
+	case ticket.FieldPriceInCents:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPriceInCents(v)
 		return nil
 	case ticket.FieldQuantity:
 		v, ok := value.(int)
@@ -4827,6 +4926,9 @@ func (m *TicketMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *TicketMutation) AddedFields() []string {
 	var fields []string
+	if m.addprice_in_cents != nil {
+		fields = append(fields, ticket.FieldPriceInCents)
+	}
 	if m.addquantity != nil {
 		fields = append(fields, ticket.FieldQuantity)
 	}
@@ -4838,6 +4940,8 @@ func (m *TicketMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *TicketMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case ticket.FieldPriceInCents:
+		return m.AddedPriceInCents()
 	case ticket.FieldQuantity:
 		return m.AddedQuantity()
 	}
@@ -4849,6 +4953,13 @@ func (m *TicketMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *TicketMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case ticket.FieldPriceInCents:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPriceInCents(v)
+		return nil
 	case ticket.FieldQuantity:
 		v, ok := value.(int)
 		if !ok {
@@ -4864,6 +4975,12 @@ func (m *TicketMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *TicketMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(ticket.FieldMintPrice) {
+		fields = append(fields, ticket.FieldMintPrice)
+	}
+	if m.FieldCleared(ticket.FieldPriceInCents) {
+		fields = append(fields, ticket.FieldPriceInCents)
+	}
 	if m.FieldCleared(ticket.FieldTicketHash) {
 		fields = append(fields, ticket.FieldTicketHash)
 	}
@@ -4896,6 +5013,12 @@ func (m *TicketMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *TicketMutation) ClearField(name string) error {
 	switch name {
+	case ticket.FieldMintPrice:
+		m.ClearMintPrice()
+		return nil
+	case ticket.FieldPriceInCents:
+		m.ClearPriceInCents()
+		return nil
 	case ticket.FieldTicketHash:
 		m.ClearTicketHash()
 		return nil
@@ -4933,6 +5056,9 @@ func (m *TicketMutation) ResetField(name string) error {
 		return nil
 	case ticket.FieldMintPrice:
 		m.ResetMintPrice()
+		return nil
+	case ticket.FieldPriceInCents:
+		m.ResetPriceInCents()
 		return nil
 	case ticket.FieldQuantity:
 		m.ResetQuantity()

@@ -52,7 +52,7 @@ func CreateCheckout(c echo.Context) error {
 		TicketId:      ticket.ID,
 		EventId:       ticket.EventID,
 		WalletAddress: input.WalletAddress,
-		Price:         100,        // todo(jhudiel) - make dynamic
+		Price:         ticket.PriceInCents,
 		CCCheckoutId:  uuid.New(), // temporary uuid
 	})
 
@@ -61,7 +61,7 @@ func CreateCheckout(c echo.Context) error {
 		Description: ticket.Description,
 		PricingType: "fixed_price",
 		LocalPrice: service.PriceInput{
-			Amount:   fmt.Sprintf("%.2f", 1.00), // todo(jhudiel) - Make it dynamic
+			Amount:   fmt.Sprintf("%.2f", float64(ticket.PriceInCents)/100),
 			Currency: "USD",
 		},
 		Metadata: map[string]string{

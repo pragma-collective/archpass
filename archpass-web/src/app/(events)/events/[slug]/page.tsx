@@ -17,7 +17,7 @@ import { useCreateTicketImageMutation } from '@/queries/create-ticket-image';
 import { usePublicEventItemQuery } from '@/queries/public-event-item';
 import type { TTicket } from '@/types';
 
-import { CalendarIcon, MapPinIcon, StarIcon, } from 'lucide-react';
+import { CalendarIcon, MapPinIcon, StarIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';

@@ -75,6 +75,11 @@ func MintPrice(v string) predicate.Ticket {
 	return predicate.Ticket(sql.FieldEQ(FieldMintPrice, v))
 }
 
+// PriceInCents applies equality check predicate on the "price_in_cents" field. It's identical to PriceInCentsEQ.
+func PriceInCents(v int64) predicate.Ticket {
+	return predicate.Ticket(sql.FieldEQ(FieldPriceInCents, v))
+}
+
 // Quantity applies equality check predicate on the "quantity" field. It's identical to QuantityEQ.
 func Quantity(v int) predicate.Ticket {
 	return predicate.Ticket(sql.FieldEQ(FieldQuantity, v))
@@ -375,6 +380,16 @@ func MintPriceHasSuffix(v string) predicate.Ticket {
 	return predicate.Ticket(sql.FieldHasSuffix(FieldMintPrice, v))
 }
 
+// MintPriceIsNil applies the IsNil predicate on the "mint_price" field.
+func MintPriceIsNil() predicate.Ticket {
+	return predicate.Ticket(sql.FieldIsNull(FieldMintPrice))
+}
+
+// MintPriceNotNil applies the NotNil predicate on the "mint_price" field.
+func MintPriceNotNil() predicate.Ticket {
+	return predicate.Ticket(sql.FieldNotNull(FieldMintPrice))
+}
+
 // MintPriceEqualFold applies the EqualFold predicate on the "mint_price" field.
 func MintPriceEqualFold(v string) predicate.Ticket {
 	return predicate.Ticket(sql.FieldEqualFold(FieldMintPrice, v))
@@ -383,6 +398,56 @@ func MintPriceEqualFold(v string) predicate.Ticket {
 // MintPriceContainsFold applies the ContainsFold predicate on the "mint_price" field.
 func MintPriceContainsFold(v string) predicate.Ticket {
 	return predicate.Ticket(sql.FieldContainsFold(FieldMintPrice, v))
+}
+
+// PriceInCentsEQ applies the EQ predicate on the "price_in_cents" field.
+func PriceInCentsEQ(v int64) predicate.Ticket {
+	return predicate.Ticket(sql.FieldEQ(FieldPriceInCents, v))
+}
+
+// PriceInCentsNEQ applies the NEQ predicate on the "price_in_cents" field.
+func PriceInCentsNEQ(v int64) predicate.Ticket {
+	return predicate.Ticket(sql.FieldNEQ(FieldPriceInCents, v))
+}
+
+// PriceInCentsIn applies the In predicate on the "price_in_cents" field.
+func PriceInCentsIn(vs ...int64) predicate.Ticket {
+	return predicate.Ticket(sql.FieldIn(FieldPriceInCents, vs...))
+}
+
+// PriceInCentsNotIn applies the NotIn predicate on the "price_in_cents" field.
+func PriceInCentsNotIn(vs ...int64) predicate.Ticket {
+	return predicate.Ticket(sql.FieldNotIn(FieldPriceInCents, vs...))
+}
+
+// PriceInCentsGT applies the GT predicate on the "price_in_cents" field.
+func PriceInCentsGT(v int64) predicate.Ticket {
+	return predicate.Ticket(sql.FieldGT(FieldPriceInCents, v))
+}
+
+// PriceInCentsGTE applies the GTE predicate on the "price_in_cents" field.
+func PriceInCentsGTE(v int64) predicate.Ticket {
+	return predicate.Ticket(sql.FieldGTE(FieldPriceInCents, v))
+}
+
+// PriceInCentsLT applies the LT predicate on the "price_in_cents" field.
+func PriceInCentsLT(v int64) predicate.Ticket {
+	return predicate.Ticket(sql.FieldLT(FieldPriceInCents, v))
+}
+
+// PriceInCentsLTE applies the LTE predicate on the "price_in_cents" field.
+func PriceInCentsLTE(v int64) predicate.Ticket {
+	return predicate.Ticket(sql.FieldLTE(FieldPriceInCents, v))
+}
+
+// PriceInCentsIsNil applies the IsNil predicate on the "price_in_cents" field.
+func PriceInCentsIsNil() predicate.Ticket {
+	return predicate.Ticket(sql.FieldIsNull(FieldPriceInCents))
+}
+
+// PriceInCentsNotNil applies the NotNil predicate on the "price_in_cents" field.
+func PriceInCentsNotNil() predicate.Ticket {
+	return predicate.Ticket(sql.FieldNotNull(FieldPriceInCents))
 }
 
 // QuantityEQ applies the EQ predicate on the "quantity" field.

@@ -4,12 +4,12 @@ pragma solidity >=0.8.0 <0.9.0;
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
-contract Ticket is Initializable, ERC721URIStorageUpgradeable, OwnableUpgradeable {
+contract Ticket is Initializable, ERC721URIStorageUpgradeable, OwnableUpgradeable, AccessControlUpgradeable {
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     uint256 private _tokenIdCounter;
-
     uint256 public maxSupply;
-    uint256 public mintPrice;
     bool public allowMint = true;
 
     mapping(address => uint256) public userMintCount; 
@@ -18,21 +18,27 @@ contract Ticket is Initializable, ERC721URIStorageUpgradeable, OwnableUpgradeabl
         string memory name,
         string memory symbol,
         uint256 _maxSupply,
-        uint256 _mintPrice,
-        address owner 
+        address owner,
+        address admin
     ) public initializer {
         __ERC721_init(name, symbol);
         __Ownable_init(owner);
+        __AccessControl_init();
+
+        _grantRole(DEFAULT_ADMIN_ROLE, owner);
+        _grantRole(ADMIN_ROLE, admin);
 
         maxSupply = _maxSupply;
-        mintPrice = _mintPrice;
-        allowMint = true;  
+        allowMint = true;
         _tokenIdCounter = 0;
     }
 
     function mintNFT(address to, string memory tokenURI) public returns (uint256) {
+       require(
+            owner() == to || hasRole(ADMIN_ROLE, to),
+            "UNAUTHORIZED_TO_MINT"
+        );
         require(_tokenIdCounter < maxSupply, "Max supply reached");
-        require(userMintCount[to] == 0, "Attendee has already minted a ticket");
         require(allowMint, "Minting is not allowed");
 
         _tokenIdCounter++;
@@ -46,10 +52,6 @@ contract Ticket is Initializable, ERC721URIStorageUpgradeable, OwnableUpgradeabl
         return newItemId;
     }
 
-    function setMintPrice(uint256 _mintPrice) public onlyOwner {
-        mintPrice = _mintPrice;
-    }
-
     function setAllowMint(bool _allowMint) public onlyOwner {
         allowMint = _allowMint;
     }
@@ -60,5 +62,15 @@ contract Ticket is Initializable, ERC721URIStorageUpgradeable, OwnableUpgradeabl
 
     function totalSupply() public view returns (uint256) {
         return _tokenIdCounter;
+    }
+
+    // Override required function
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721URIStorageUpgradeable, AccessControlUpgradeable)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }

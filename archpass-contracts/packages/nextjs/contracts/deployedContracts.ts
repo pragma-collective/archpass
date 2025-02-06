@@ -7,29 +7,8 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     Event: {
-      address: "0x1916214Cefba2D9E21d15DBF98D7E9400D2f13c8",
+      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
       abi: [
-        {
-          inputs: [],
-          name: "FailedDeployment",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "balance",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "needed",
-              type: "uint256",
-            },
-          ],
-          name: "InsufficientBalance",
-          type: "error",
-        },
         {
           inputs: [],
           name: "InvalidInitialization",
@@ -112,40 +91,6 @@ const deployedContracts = {
           ],
           name: "TicketCreated",
           type: "event",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "name",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "maxSupply",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "mintPrice",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "ticketHash",
-              type: "string",
-            },
-          ],
-          name: "createTicket",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "nonpayable",
-          type: "function",
         },
         {
           inputs: [
@@ -245,6 +190,11 @@ const deployedContracts = {
             {
               internalType: "address",
               name: "ticketAddress",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "recipient",
               type: "address",
             },
             {
@@ -310,13 +260,6 @@ const deployedContracts = {
           stateMutability: "nonpayable",
           type: "function",
         },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
       ],
       inheritedFunctions: {
         owner:
@@ -328,7 +271,7 @@ const deployedContracts = {
       },
     },
     EventFactory: {
-      address: "0xf37242390fA265401Bf59331a587Dc07872B2Ce3",
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
       abi: [
         {
           inputs: [
@@ -340,6 +283,11 @@ const deployedContracts = {
             {
               internalType: "address",
               name: "_ticketImplementation",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_admin",
               type: "address",
             },
           ],
@@ -455,6 +403,19 @@ const deployedContracts = {
           type: "event",
         },
         {
+          inputs: [],
+          name: "admin",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",
@@ -551,11 +512,6 @@ const deployedContracts = {
             {
               internalType: "uint256",
               name: "maxSupply",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "mintPrice",
               type: "uint256",
             },
             {
@@ -763,8 +719,29 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Ticket: {
-      address: "0x22477c0E832CAfF1850926016A233172442A0ed1",
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
       abi: [
+        {
+          inputs: [],
+          name: "AccessControlBadConfirmation",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              internalType: "bytes32",
+              name: "neededRole",
+              type: "bytes32",
+            },
+          ],
+          name: "AccessControlUnauthorizedAccount",
+          type: "error",
+        },
         {
           inputs: [
             {
@@ -1019,6 +996,81 @@ const deployedContracts = {
           inputs: [
             {
               indexed: true,
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "previousAdminRole",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "newAdminRole",
+              type: "bytes32",
+            },
+          ],
+          name: "RoleAdminChanged",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "RoleGranted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "RoleRevoked",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
               internalType: "address",
               name: "from",
               type: "address",
@@ -1038,6 +1090,32 @@ const deployedContracts = {
           ],
           name: "Transfer",
           type: "event",
+        },
+        {
+          inputs: [],
+          name: "ADMIN_ROLE",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "DEFAULT_ADMIN_ROLE",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
         },
         {
           inputs: [],
@@ -1111,6 +1189,67 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+          ],
+          name: "getRoleAdmin",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "grantRole",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "hasRole",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
               internalType: "string",
               name: "name",
               type: "string",
@@ -1126,13 +1265,13 @@ const deployedContracts = {
               type: "uint256",
             },
             {
-              internalType: "uint256",
-              name: "_mintPrice",
-              type: "uint256",
+              internalType: "address",
+              name: "owner",
+              type: "address",
             },
             {
               internalType: "address",
-              name: "owner",
+              name: "admin",
               type: "address",
             },
           ],
@@ -1204,19 +1343,6 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "mintPrice",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
           name: "name",
           outputs: [
             {
@@ -1263,6 +1389,42 @@ const deployedContracts = {
         {
           inputs: [],
           name: "renounceOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "callerConfirmation",
+              type: "address",
+            },
+          ],
+          name: "renounceRole",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "revokeRole",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -1358,19 +1520,6 @@ const deployedContracts = {
             },
           ],
           name: "setMaxSupply",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_mintPrice",
-              type: "uint256",
-            },
-          ],
-          name: "setMintPrice",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -1512,7 +1661,7 @@ const deployedContracts = {
         setApprovalForAll:
           "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol",
         supportsInterface:
-          "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol",
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
         symbol:
           "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol",
         tokenURI:
@@ -1525,34 +1674,25 @@ const deployedContracts = {
           "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
         transferOwnership:
           "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
+        DEFAULT_ADMIN_ROLE:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        getRoleAdmin:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        grantRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        hasRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        renounceRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        revokeRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
       },
     },
   },
   84532: {
     Event: {
-      address: "0x558020b8e4b8ea9EdC6D0393DBe14E59b7eF86c2",
+      address: "0x129d9E3c9b464F9642cb4C8A153d2Dec49987a00",
       abi: [
-        {
-          inputs: [],
-          name: "FailedDeployment",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "balance",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "needed",
-              type: "uint256",
-            },
-          ],
-          name: "InsufficientBalance",
-          type: "error",
-        },
         {
           inputs: [],
           name: "InvalidInitialization",
@@ -1635,40 +1775,6 @@ const deployedContracts = {
           ],
           name: "TicketCreated",
           type: "event",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "name",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "maxSupply",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "mintPrice",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "ticketHash",
-              type: "string",
-            },
-          ],
-          name: "createTicket",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "nonpayable",
-          type: "function",
         },
         {
           inputs: [
@@ -1771,6 +1877,11 @@ const deployedContracts = {
               type: "address",
             },
             {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
               internalType: "string",
               name: "tokenURI",
               type: "string",
@@ -1801,6 +1912,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "address",
+              name: "ticketAddress",
+              type: "address",
+            },
+          ],
+          name: "registerTicket",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "renounceOwnership",
           outputs: [],
@@ -1820,13 +1944,6 @@ const deployedContracts = {
           stateMutability: "nonpayable",
           type: "function",
         },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
       ],
       inheritedFunctions: {
         owner:
@@ -1838,7 +1955,7 @@ const deployedContracts = {
       },
     },
     EventFactory: {
-      address: "0xe5988D31f72F1054dD12a7a16Dc565ea3050F4ee",
+      address: "0xBBcD8Ae4EcBb3Cca8CE62f5B19bFa587f75A932C",
       abi: [
         {
           inputs: [
@@ -1850,6 +1967,11 @@ const deployedContracts = {
             {
               internalType: "address",
               name: "_ticketImplementation",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_admin",
               type: "address",
             },
           ],
@@ -1882,12 +2004,49 @@ const deployedContracts = {
           inputs: [
             {
               indexed: false,
+              internalType: "string",
+              name: "eventHash",
+              type: "string",
+            },
+            {
+              indexed: false,
               internalType: "address",
               name: "clone",
               type: "address",
             },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
           ],
           name: "EventCreated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "string",
+              name: "ticketHash",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "clone",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "TicketCreated",
           type: "event",
         },
         {
@@ -1926,6 +2085,19 @@ const deployedContracts = {
           ],
           name: "TicketMinted",
           type: "event",
+        },
+        {
+          inputs: [],
+          name: "admin",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
         },
         {
           inputs: [
@@ -1991,8 +2163,48 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "string",
+              name: "eventHash",
+              type: "string",
+            },
+          ],
           name: "createEvent",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "eventAddress",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "maxSupply",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "ticketHash",
+              type: "string",
+            },
+          ],
+          name: "createTicket",
           outputs: [
             {
               internalType: "address",
@@ -2191,8 +2403,29 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Ticket: {
-      address: "0x22477c0E832CAfF1850926016A233172442A0ed1",
+      address: "0x254eFB5BAfb230989087be398E5C148fE2b4B96C",
       abi: [
+        {
+          inputs: [],
+          name: "AccessControlBadConfirmation",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              internalType: "bytes32",
+              name: "neededRole",
+              type: "bytes32",
+            },
+          ],
+          name: "AccessControlUnauthorizedAccount",
+          type: "error",
+        },
         {
           inputs: [
             {
@@ -2447,6 +2680,81 @@ const deployedContracts = {
           inputs: [
             {
               indexed: true,
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "previousAdminRole",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "newAdminRole",
+              type: "bytes32",
+            },
+          ],
+          name: "RoleAdminChanged",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "RoleGranted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "RoleRevoked",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
               internalType: "address",
               name: "from",
               type: "address",
@@ -2466,6 +2774,32 @@ const deployedContracts = {
           ],
           name: "Transfer",
           type: "event",
+        },
+        {
+          inputs: [],
+          name: "ADMIN_ROLE",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "DEFAULT_ADMIN_ROLE",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
         },
         {
           inputs: [],
@@ -2539,6 +2873,67 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+          ],
+          name: "getRoleAdmin",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "grantRole",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "hasRole",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
               internalType: "string",
               name: "name",
               type: "string",
@@ -2554,13 +2949,13 @@ const deployedContracts = {
               type: "uint256",
             },
             {
-              internalType: "uint256",
-              name: "_mintPrice",
-              type: "uint256",
+              internalType: "address",
+              name: "owner",
+              type: "address",
             },
             {
               internalType: "address",
-              name: "owner",
+              name: "admin",
               type: "address",
             },
           ],
@@ -2632,19 +3027,6 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "mintPrice",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
           name: "name",
           outputs: [
             {
@@ -2691,6 +3073,42 @@ const deployedContracts = {
         {
           inputs: [],
           name: "renounceOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "callerConfirmation",
+              type: "address",
+            },
+          ],
+          name: "renounceRole",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "revokeRole",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -2786,19 +3204,6 @@ const deployedContracts = {
             },
           ],
           name: "setMaxSupply",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_mintPrice",
-              type: "uint256",
-            },
-          ],
-          name: "setMintPrice",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -2940,7 +3345,7 @@ const deployedContracts = {
         setApprovalForAll:
           "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol",
         supportsInterface:
-          "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol",
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
         symbol:
           "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol",
         tokenURI:
@@ -2953,6 +3358,18 @@ const deployedContracts = {
           "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
         transferOwnership:
           "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
+        DEFAULT_ADMIN_ROLE:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        getRoleAdmin:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        grantRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        hasRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        renounceRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        revokeRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
       },
     },
   },

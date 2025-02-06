@@ -49,6 +49,28 @@ func (tc *TicketCreate) SetMintPrice(s string) *TicketCreate {
 	return tc
 }
 
+// SetNillableMintPrice sets the "mint_price" field if the given value is not nil.
+func (tc *TicketCreate) SetNillableMintPrice(s *string) *TicketCreate {
+	if s != nil {
+		tc.SetMintPrice(*s)
+	}
+	return tc
+}
+
+// SetPriceInCents sets the "price_in_cents" field.
+func (tc *TicketCreate) SetPriceInCents(i int64) *TicketCreate {
+	tc.mutation.SetPriceInCents(i)
+	return tc
+}
+
+// SetNillablePriceInCents sets the "price_in_cents" field if the given value is not nil.
+func (tc *TicketCreate) SetNillablePriceInCents(i *int64) *TicketCreate {
+	if i != nil {
+		tc.SetPriceInCents(*i)
+	}
+	return tc
+}
+
 // SetQuantity sets the "quantity" field.
 func (tc *TicketCreate) SetQuantity(i int) *TicketCreate {
 	tc.mutation.SetQuantity(i)
@@ -273,9 +295,6 @@ func (tc *TicketCreate) check() error {
 			return &ValidationError{Name: "ticket_slug", err: fmt.Errorf(`ent: validator failed for field "Ticket.ticket_slug": %w`, err)}
 		}
 	}
-	if _, ok := tc.mutation.MintPrice(); !ok {
-		return &ValidationError{Name: "mint_price", err: errors.New(`ent: missing required field "Ticket.mint_price"`)}
-	}
 	if _, ok := tc.mutation.Quantity(); !ok {
 		return &ValidationError{Name: "quantity", err: errors.New(`ent: missing required field "Ticket.quantity"`)}
 	}
@@ -333,6 +352,10 @@ func (tc *TicketCreate) createSpec() (*Ticket, *sqlgraph.CreateSpec) {
 	if value, ok := tc.mutation.MintPrice(); ok {
 		_spec.SetField(ticket.FieldMintPrice, field.TypeString, value)
 		_node.MintPrice = value
+	}
+	if value, ok := tc.mutation.PriceInCents(); ok {
+		_spec.SetField(ticket.FieldPriceInCents, field.TypeInt64, value)
+		_node.PriceInCents = value
 	}
 	if value, ok := tc.mutation.Quantity(); ok {
 		_spec.SetField(ticket.FieldQuantity, field.TypeInt, value)
@@ -516,6 +539,36 @@ func (u *TicketUpsert) SetMintPrice(v string) *TicketUpsert {
 // UpdateMintPrice sets the "mint_price" field to the value that was provided on create.
 func (u *TicketUpsert) UpdateMintPrice() *TicketUpsert {
 	u.SetExcluded(ticket.FieldMintPrice)
+	return u
+}
+
+// ClearMintPrice clears the value of the "mint_price" field.
+func (u *TicketUpsert) ClearMintPrice() *TicketUpsert {
+	u.SetNull(ticket.FieldMintPrice)
+	return u
+}
+
+// SetPriceInCents sets the "price_in_cents" field.
+func (u *TicketUpsert) SetPriceInCents(v int64) *TicketUpsert {
+	u.Set(ticket.FieldPriceInCents, v)
+	return u
+}
+
+// UpdatePriceInCents sets the "price_in_cents" field to the value that was provided on create.
+func (u *TicketUpsert) UpdatePriceInCents() *TicketUpsert {
+	u.SetExcluded(ticket.FieldPriceInCents)
+	return u
+}
+
+// AddPriceInCents adds v to the "price_in_cents" field.
+func (u *TicketUpsert) AddPriceInCents(v int64) *TicketUpsert {
+	u.Add(ticket.FieldPriceInCents, v)
+	return u
+}
+
+// ClearPriceInCents clears the value of the "price_in_cents" field.
+func (u *TicketUpsert) ClearPriceInCents() *TicketUpsert {
+	u.SetNull(ticket.FieldPriceInCents)
 	return u
 }
 
@@ -774,6 +827,41 @@ func (u *TicketUpsertOne) SetMintPrice(v string) *TicketUpsertOne {
 func (u *TicketUpsertOne) UpdateMintPrice() *TicketUpsertOne {
 	return u.Update(func(s *TicketUpsert) {
 		s.UpdateMintPrice()
+	})
+}
+
+// ClearMintPrice clears the value of the "mint_price" field.
+func (u *TicketUpsertOne) ClearMintPrice() *TicketUpsertOne {
+	return u.Update(func(s *TicketUpsert) {
+		s.ClearMintPrice()
+	})
+}
+
+// SetPriceInCents sets the "price_in_cents" field.
+func (u *TicketUpsertOne) SetPriceInCents(v int64) *TicketUpsertOne {
+	return u.Update(func(s *TicketUpsert) {
+		s.SetPriceInCents(v)
+	})
+}
+
+// AddPriceInCents adds v to the "price_in_cents" field.
+func (u *TicketUpsertOne) AddPriceInCents(v int64) *TicketUpsertOne {
+	return u.Update(func(s *TicketUpsert) {
+		s.AddPriceInCents(v)
+	})
+}
+
+// UpdatePriceInCents sets the "price_in_cents" field to the value that was provided on create.
+func (u *TicketUpsertOne) UpdatePriceInCents() *TicketUpsertOne {
+	return u.Update(func(s *TicketUpsert) {
+		s.UpdatePriceInCents()
+	})
+}
+
+// ClearPriceInCents clears the value of the "price_in_cents" field.
+func (u *TicketUpsertOne) ClearPriceInCents() *TicketUpsertOne {
+	return u.Update(func(s *TicketUpsert) {
+		s.ClearPriceInCents()
 	})
 }
 
@@ -1223,6 +1311,41 @@ func (u *TicketUpsertBulk) SetMintPrice(v string) *TicketUpsertBulk {
 func (u *TicketUpsertBulk) UpdateMintPrice() *TicketUpsertBulk {
 	return u.Update(func(s *TicketUpsert) {
 		s.UpdateMintPrice()
+	})
+}
+
+// ClearMintPrice clears the value of the "mint_price" field.
+func (u *TicketUpsertBulk) ClearMintPrice() *TicketUpsertBulk {
+	return u.Update(func(s *TicketUpsert) {
+		s.ClearMintPrice()
+	})
+}
+
+// SetPriceInCents sets the "price_in_cents" field.
+func (u *TicketUpsertBulk) SetPriceInCents(v int64) *TicketUpsertBulk {
+	return u.Update(func(s *TicketUpsert) {
+		s.SetPriceInCents(v)
+	})
+}
+
+// AddPriceInCents adds v to the "price_in_cents" field.
+func (u *TicketUpsertBulk) AddPriceInCents(v int64) *TicketUpsertBulk {
+	return u.Update(func(s *TicketUpsert) {
+		s.AddPriceInCents(v)
+	})
+}
+
+// UpdatePriceInCents sets the "price_in_cents" field to the value that was provided on create.
+func (u *TicketUpsertBulk) UpdatePriceInCents() *TicketUpsertBulk {
+	return u.Update(func(s *TicketUpsert) {
+		s.UpdatePriceInCents()
+	})
+}
+
+// ClearPriceInCents clears the value of the "price_in_cents" field.
+func (u *TicketUpsertBulk) ClearPriceInCents() *TicketUpsertBulk {
+	return u.Update(func(s *TicketUpsert) {
+		s.ClearPriceInCents()
 	})
 }
 

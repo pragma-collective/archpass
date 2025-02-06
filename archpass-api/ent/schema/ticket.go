@@ -20,7 +20,10 @@ func (Ticket) Fields() []ent.Field {
 		field.String("ticket_slug").
 			NotEmpty().
 			Unique(),
-		field.String("mint_price"),
+		field.String("mint_price").
+			Optional(),
+		field.Int64("price_in_cents").
+			Optional(),
 		field.Int("quantity"),
 		field.Int("event_id"),
 		field.String("ticket_hash").

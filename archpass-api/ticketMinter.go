@@ -10,7 +10,6 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/params"
 	"github.com/joho/godotenv"
 	"github.com/pragma-collective/archpass/ent"
 	"github.com/pragma-collective/archpass/internal/adapter/repository"
@@ -19,7 +18,6 @@ import (
 	"math/big"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -33,55 +31,6 @@ type MintResult struct {
 	TokenID        string
 	MintTxHash     string
 	TransferTxHash string
-}
-
-func ParseEther(eth string) (*big.Int, bool) {
-	// Split the string on decimal point
-	parts := strings.Split(eth, ".")
-
-	wei := new(big.Int)
-
-	if len(parts) == 1 {
-		// No decimal places
-		val, ok := wei.SetString(parts[0], 10)
-		if !ok {
-			return nil, false
-		}
-		// Multiply by 10^18
-		return wei.Mul(val, big.NewInt(params.Ether)), true
-	}
-
-	if len(parts) != 2 {
-		return nil, false
-	}
-
-	// Handle the integer part
-	intPart := new(big.Int)
-	intPart, ok := intPart.SetString(parts[0], 10)
-	if !ok {
-		return nil, false
-	}
-
-	// Handle the decimal part
-	decPart := new(big.Int)
-	decPart, ok = decPart.SetString(parts[1], 10)
-	if !ok {
-		return nil, false
-	}
-
-	// Calculate the multiplier for the decimal part
-	// If decimal is shorter than 18 places, pad with zeros
-	decimalPlaces := len(parts[1])
-	multiplier := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(18-decimalPlaces)), nil)
-	decPart.Mul(decPart, multiplier)
-
-	// Convert the integer part to wei
-	intPart.Mul(intPart, big.NewInt(params.Ether))
-
-	// Add both parts together
-	wei.Add(intPart, decPart)
-
-	return wei, true
 }
 
 // resetTransactOpts updates the nonce and gas settings for a new transaction
@@ -204,13 +153,8 @@ func createTransactOpts(privateKeyHex string, client *ethclient.Client) (*bind.T
 }
 
 func (m *TicketMinter) MintTicket(order *ent.Order) (*MintResult, error) {
-	price, ok := ParseEther(order.Edges.Ticket.MintPrice)
-	if !ok {
-		return nil, fmt.Errorf("failed to parse mint price: %s", order.Edges.Ticket.MintPrice)
-	}
 	ticketAddress := common.HexToAddress(order.Edges.Ticket.ContractAddress)
-
-	//m.auth.Value = price
+	recipient := common.HexToAddress(order.WalletAddress)
 
 	// Check if ticket exists
 	exists, err := m.contract.DoesTicketExist(&bind.CallOpts{}, ticketAddress)
@@ -222,7 +166,7 @@ func (m *TicketMinter) MintTicket(order *ent.Order) (*MintResult, error) {
 	}
 
 	// Prepare for minting
-	if err := m.resetTransactOpts(price); err != nil {
+	if err := m.resetTransactOpts(big.NewInt(0)); err != nil {
 		return nil, fmt.Errorf("failed to reset transaction options: %w", err)
 	}
 
@@ -232,7 +176,8 @@ func (m *TicketMinter) MintTicket(order *ent.Order) (*MintResult, error) {
 		return nil, fmt.Errorf("failed to get ABI: %w", err)
 	}
 
-	mintData, err := parsed.Pack("mintNFT", ticketAddress, order.Edges.Ticket.BaseTokenURI)
+	fmt.Println(m.auth.From)
+	mintData, err := parsed.Pack("mintNFT", ticketAddress, recipient, order.Edges.Ticket.BaseTokenURI)
 	if err != nil {
 		return nil, fmt.Errorf("failed to pack data: %w", err)
 	}
@@ -241,14 +186,14 @@ func (m *TicketMinter) MintTicket(order *ent.Order) (*MintResult, error) {
 	if err := m.estimateAndSetGas(ethereum.CallMsg{
 		From:  m.auth.From,
 		To:    &eventAddr,
-		Value: price,
+		Value: big.NewInt(0),
 		Data:  mintData,
 	}); err != nil {
 		return nil, err
 	}
 
 	// Mint NFT
-	mintTx, err := m.contract.MintNFT(m.auth, ticketAddress, order.Edges.Ticket.BaseTokenURI)
+	mintTx, err := m.contract.MintNFT(m.auth, ticketAddress, recipient, order.Edges.Ticket.BaseTokenURI)
 	if err != nil {
 		return nil, fmt.Errorf("failed to mint NFT: %w", err)
 	}

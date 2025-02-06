@@ -35,19 +35,6 @@ contract Event is Initializable, OwnableUpgradeable {
         factoryAddress = _factoryAddress;
     }
 
-    function createTicket(
-        string memory name,
-        uint256 maxSupply,
-        uint256 mintPrice,
-        string memory ticketHash 
-    ) public onlyOwner returns (address) {
-        address clone = Clones.clone(ticketImplementation);
-        Ticket(clone).initialize(name, "TNFT", maxSupply, mintPrice, owner());
-        eventTickets.push(clone);
-        emit TicketCreated(ticketHash, clone);
-        return clone;
-    }
-
     function registerTicket(address ticketAddress) external {
         require(msg.sender == factoryAddress, "Caller is not the factory");
         eventTickets.push(ticketAddress);
@@ -55,27 +42,17 @@ contract Event is Initializable, OwnableUpgradeable {
     
     function mintNFT(
         address ticketAddress,
+        address recipient,
         string memory tokenURI
     ) public payable returns (uint256) {
         require(doesTicketExist(ticketAddress), "Ticket doesn't belong to Event");
         Ticket ticket = Ticket(ticketAddress);
-        require(msg.value >= ticket.mintPrice(), "Insufficient ETH sent");
-        
-        // Refund excess payment
-        if (msg.value > ticket.mintPrice()) {
-            payable(msg.sender).transfer(msg.value - ticket.mintPrice());
-        }
-        
+
         uint256 tokenId = ticket.mintNFT(msg.sender, tokenURI);
         eventMinters[msg.sender] = ticketAddress;
 
-        IEventFactory(factoryAddress).recordMint(tokenId, ticketAddress, address(this), msg.sender);
+        IEventFactory(factoryAddress).recordMint(tokenId, ticketAddress, address(this), recipient);
 
         return tokenId;
-    }
-
-    function withdraw() public onlyOwner {
-        uint256 balance = address(this).balance;
-        payable(owner()).transfer(balance);
     }
 }

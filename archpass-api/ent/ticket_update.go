@@ -87,6 +87,39 @@ func (tu *TicketUpdate) SetNillableMintPrice(s *string) *TicketUpdate {
 	return tu
 }
 
+// ClearMintPrice clears the value of the "mint_price" field.
+func (tu *TicketUpdate) ClearMintPrice() *TicketUpdate {
+	tu.mutation.ClearMintPrice()
+	return tu
+}
+
+// SetPriceInCents sets the "price_in_cents" field.
+func (tu *TicketUpdate) SetPriceInCents(i int64) *TicketUpdate {
+	tu.mutation.ResetPriceInCents()
+	tu.mutation.SetPriceInCents(i)
+	return tu
+}
+
+// SetNillablePriceInCents sets the "price_in_cents" field if the given value is not nil.
+func (tu *TicketUpdate) SetNillablePriceInCents(i *int64) *TicketUpdate {
+	if i != nil {
+		tu.SetPriceInCents(*i)
+	}
+	return tu
+}
+
+// AddPriceInCents adds i to the "price_in_cents" field.
+func (tu *TicketUpdate) AddPriceInCents(i int64) *TicketUpdate {
+	tu.mutation.AddPriceInCents(i)
+	return tu
+}
+
+// ClearPriceInCents clears the value of the "price_in_cents" field.
+func (tu *TicketUpdate) ClearPriceInCents() *TicketUpdate {
+	tu.mutation.ClearPriceInCents()
+	return tu
+}
+
 // SetQuantity sets the "quantity" field.
 func (tu *TicketUpdate) SetQuantity(i int) *TicketUpdate {
 	tu.mutation.ResetQuantity()
@@ -412,6 +445,18 @@ func (tu *TicketUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := tu.mutation.MintPrice(); ok {
 		_spec.SetField(ticket.FieldMintPrice, field.TypeString, value)
 	}
+	if tu.mutation.MintPriceCleared() {
+		_spec.ClearField(ticket.FieldMintPrice, field.TypeString)
+	}
+	if value, ok := tu.mutation.PriceInCents(); ok {
+		_spec.SetField(ticket.FieldPriceInCents, field.TypeInt64, value)
+	}
+	if value, ok := tu.mutation.AddedPriceInCents(); ok {
+		_spec.AddField(ticket.FieldPriceInCents, field.TypeInt64, value)
+	}
+	if tu.mutation.PriceInCentsCleared() {
+		_spec.ClearField(ticket.FieldPriceInCents, field.TypeInt64)
+	}
 	if value, ok := tu.mutation.Quantity(); ok {
 		_spec.SetField(ticket.FieldQuantity, field.TypeInt, value)
 	}
@@ -636,6 +681,39 @@ func (tuo *TicketUpdateOne) SetNillableMintPrice(s *string) *TicketUpdateOne {
 	if s != nil {
 		tuo.SetMintPrice(*s)
 	}
+	return tuo
+}
+
+// ClearMintPrice clears the value of the "mint_price" field.
+func (tuo *TicketUpdateOne) ClearMintPrice() *TicketUpdateOne {
+	tuo.mutation.ClearMintPrice()
+	return tuo
+}
+
+// SetPriceInCents sets the "price_in_cents" field.
+func (tuo *TicketUpdateOne) SetPriceInCents(i int64) *TicketUpdateOne {
+	tuo.mutation.ResetPriceInCents()
+	tuo.mutation.SetPriceInCents(i)
+	return tuo
+}
+
+// SetNillablePriceInCents sets the "price_in_cents" field if the given value is not nil.
+func (tuo *TicketUpdateOne) SetNillablePriceInCents(i *int64) *TicketUpdateOne {
+	if i != nil {
+		tuo.SetPriceInCents(*i)
+	}
+	return tuo
+}
+
+// AddPriceInCents adds i to the "price_in_cents" field.
+func (tuo *TicketUpdateOne) AddPriceInCents(i int64) *TicketUpdateOne {
+	tuo.mutation.AddPriceInCents(i)
+	return tuo
+}
+
+// ClearPriceInCents clears the value of the "price_in_cents" field.
+func (tuo *TicketUpdateOne) ClearPriceInCents() *TicketUpdateOne {
+	tuo.mutation.ClearPriceInCents()
 	return tuo
 }
 
@@ -993,6 +1071,18 @@ func (tuo *TicketUpdateOne) sqlSave(ctx context.Context) (_node *Ticket, err err
 	}
 	if value, ok := tuo.mutation.MintPrice(); ok {
 		_spec.SetField(ticket.FieldMintPrice, field.TypeString, value)
+	}
+	if tuo.mutation.MintPriceCleared() {
+		_spec.ClearField(ticket.FieldMintPrice, field.TypeString)
+	}
+	if value, ok := tuo.mutation.PriceInCents(); ok {
+		_spec.SetField(ticket.FieldPriceInCents, field.TypeInt64, value)
+	}
+	if value, ok := tuo.mutation.AddedPriceInCents(); ok {
+		_spec.AddField(ticket.FieldPriceInCents, field.TypeInt64, value)
+	}
+	if tuo.mutation.PriceInCentsCleared() {
+		_spec.ClearField(ticket.FieldPriceInCents, field.TypeInt64)
 	}
 	if value, ok := tuo.mutation.Quantity(); ok {
 		_spec.SetField(ticket.FieldQuantity, field.TypeInt, value)

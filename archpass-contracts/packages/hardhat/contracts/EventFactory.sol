@@ -7,7 +7,8 @@ import "./Event.sol";
 contract EventFactory {
     address public immutable eventImplementation;
     address public immutable ticketImplementation;
-    address[] public deployedEvents;              
+    address[] public deployedEvents;
+    address public admin;
 
     event EventCreated(string eventHash, address clone, address sender);
     event TicketMinted(
@@ -31,10 +32,12 @@ contract EventFactory {
 
     constructor(
         address _eventImplementation,
-        address _ticketImplementation 
+        address _ticketImplementation,
+        address _admin
     ) {
         eventImplementation = _eventImplementation;
         ticketImplementation = _ticketImplementation;
+        admin = _admin;
     }
 
     function createEvent(
@@ -51,7 +54,6 @@ contract EventFactory {
         address eventAddress,
         string memory name,
         uint256 maxSupply,
-        uint256 mintPrice,
         string memory ticketHash
     ) external returns (address) {
         require(eventAddress != address(0), "Invalid event address");
@@ -59,7 +61,7 @@ contract EventFactory {
         require(Event(eventAddress).owner() == msg.sender, "Caller is not the event owner");
 
         address ticketClone = Clones.clone(ticketImplementation);
-        Ticket(ticketClone).initialize(name, "TNFT", maxSupply, mintPrice, msg.sender);
+        Ticket(ticketClone).initialize(name, "TNFT", maxSupply, msg.sender, admin);
 
         Event(eventAddress).registerTicket(ticketClone);
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarIcon, MapPinIcon, } from 'lucide-react';
+import { CalendarIcon, MapPinIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useEventTicketQuery } from '@/queries/event-ticket';
 import { convertIpfsToHttps } from '@/lib/utils';

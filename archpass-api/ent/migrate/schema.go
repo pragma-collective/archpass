@@ -128,7 +128,8 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
 		{Name: "ticket_slug", Type: field.TypeString, Unique: true},
-		{Name: "mint_price", Type: field.TypeString},
+		{Name: "mint_price", Type: field.TypeString, Nullable: true},
+		{Name: "price_in_cents", Type: field.TypeInt64, Nullable: true},
 		{Name: "quantity", Type: field.TypeInt},
 		{Name: "ticket_hash", Type: field.TypeString, Nullable: true},
 		{Name: "image_url", Type: field.TypeString, Nullable: true},
@@ -148,7 +149,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "tickets_events_tickets",
-				Columns:    []*schema.Column{TicketsColumns[14]},
+				Columns:    []*schema.Column{TicketsColumns[15]},
 				RefColumns: []*schema.Column{EventsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

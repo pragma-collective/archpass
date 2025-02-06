@@ -61,10 +61,6 @@ export function CreateTicketModal({
     if (!formData) return;
 
     try {
-      const mintPriceWei = formData.mintPrice
-        ? parseEther(formData.mintPrice)
-        : 0n;
-
       const newContracts = [
         {
           address: AP_EVENT_FACTORY_CONTRACT_ADDRESS,
@@ -74,7 +70,6 @@ export function CreateTicketModal({
             eventContractAddress,
             formData.name || '',
             formData.quantity || 0,
-            mintPriceWei,
             '0xtesthash',
           ],
         },
@@ -98,7 +93,8 @@ export function CreateTicketModal({
         name: formValues.name,
         eventId: event.id,
         quantity: Number(formValues.quantity),
-        mintPrice: formValues.mintPrice,
+        mintPrice: '0',
+        priceInCents: Math.round(parseFloat(formValues.mintPrice) * 100),
         contractAddress: ticketAddress,
         imageUrl: 'placeholder',
         baseTokenUri: 'placeholder',
@@ -140,7 +136,7 @@ export function CreateTicketModal({
             <Input
               id="mintPrice"
               type="number"
-              step="0.01"
+              step="1"
               {...register('mintPrice', {
                 required: 'Price is required',
                 min: { value: 0, message: 'Price must be 0 or greater' },

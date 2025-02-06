@@ -29,15 +29,32 @@ export const eventFactoryABI = [
         name: '_ticketImplementation',
         type: 'address',
       },
+      {
+        internalType: 'address',
+        name: '_admin',
+        type: 'address',
+      },
     ],
     stateMutability: 'nonpayable',
     type: 'constructor',
   },
-  { inputs: [], name: 'FailedDeployment', type: 'error' },
+  {
+    inputs: [],
+    name: 'FailedDeployment',
+    type: 'error',
+  },
   {
     inputs: [
-      { internalType: 'uint256', name: 'balance', type: 'uint256' },
-      { internalType: 'uint256', name: 'needed', type: 'uint256' },
+      {
+        internalType: 'uint256',
+        name: 'balance',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'needed',
+        type: 'uint256',
+      },
     ],
     name: 'InsufficientBalance',
     type: 'error',
@@ -57,6 +74,12 @@ export const eventFactoryABI = [
         name: 'clone',
         type: 'address',
       },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'sender',
+        type: 'address',
+      },
     ],
     name: 'EventCreated',
     type: 'event',
@@ -74,6 +97,12 @@ export const eventFactoryABI = [
         indexed: false,
         internalType: 'address',
         name: 'clone',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'sender',
         type: 'address',
       },
     ],
@@ -118,97 +147,249 @@ export const eventFactoryABI = [
     type: 'event',
   },
   {
+    inputs: [],
+    name: 'admin',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'uint256', name: '', type: 'uint256' },
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
     ],
     name: 'attendeeToAllTickets',
     outputs: [
-      { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
-      { internalType: 'address', name: 'ticketAddress', type: 'address' },
-      { internalType: 'address', name: 'eventAddress', type: 'address' },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'ticketAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'eventAddress',
+        type: 'address',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'uint256', name: '', type: 'uint256' },
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
     ],
     name: 'attendeeToTickets',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'string', name: 'eventHash', type: 'string' }],
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'eventHash',
+        type: 'string',
+      },
+    ],
     name: 'createEvent',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
     inputs: [
-      { internalType: 'address', name: 'eventAddress', type: 'address' },
-      { internalType: 'string', name: 'name', type: 'string' },
-      { internalType: 'uint256', name: 'maxSupply', type: 'uint256' },
-      { internalType: 'uint256', name: 'mintPrice', type: 'uint256' },
-      { internalType: 'string', name: 'ticketHash', type: 'string' },
+      {
+        internalType: 'address',
+        name: 'eventAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'string',
+        name: 'name',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: 'maxSupply',
+        type: 'uint256',
+      },
+      {
+        internalType: 'string',
+        name: 'ticketHash',
+        type: 'string',
+      },
     ],
     name: 'createTicket',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     name: 'deployedEvents',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'eventImplementation',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [
-      { internalType: 'address', name: 'attendee', type: 'address' },
-      { internalType: 'address', name: 'eventAddress', type: 'address' },
+      {
+        internalType: 'address',
+        name: 'attendee',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'eventAddress',
+        type: 'address',
+      },
     ],
     name: 'getAttendeeTicketsForEvent',
-    outputs: [{ internalType: 'uint256[]', name: '', type: 'uint256[]' }],
+    outputs: [
+      {
+        internalType: 'uint256[]',
+        name: '',
+        type: 'uint256[]',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'getDeployedEvents',
-    outputs: [{ internalType: 'address[]', name: '', type: 'address[]' }],
+    outputs: [
+      {
+        internalType: 'address[]',
+        name: '',
+        type: 'address[]',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+    ],
     name: 'getTicketOwner',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'address', name: 'attendee', type: 'address' }],
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'attendee',
+        type: 'address',
+      },
+    ],
     name: 'getTicketsOfAttendee',
     outputs: [
       {
         components: [
-          { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
-          { internalType: 'address', name: 'ticketAddress', type: 'address' },
-          { internalType: 'address', name: 'eventAddress', type: 'address' },
+          {
+            internalType: 'uint256',
+            name: 'tokenId',
+            type: 'uint256',
+          },
+          {
+            internalType: 'address',
+            name: 'ticketAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'eventAddress',
+            type: 'address',
+          },
         ],
         internalType: 'struct EventFactory.AttendeeTicket[]',
         name: '',
@@ -220,10 +401,26 @@ export const eventFactoryABI = [
   },
   {
     inputs: [
-      { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
-      { internalType: 'address', name: 'ticketAddress', type: 'address' },
-      { internalType: 'address', name: 'eventAddress', type: 'address' },
-      { internalType: 'address', name: 'minter', type: 'address' },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'ticketAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'eventAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'minter',
+        type: 'address',
+      },
     ],
     name: 'recordMint',
     outputs: [],
@@ -233,18 +430,36 @@ export const eventFactoryABI = [
   {
     inputs: [],
     name: 'ticketImplementation',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     name: 'ticketToAttendee',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export const eventABI = [
   { inputs: [], name: 'FailedDeployment', type: 'error' },
