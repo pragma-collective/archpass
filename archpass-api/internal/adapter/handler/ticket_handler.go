@@ -45,18 +45,18 @@ func CreateTicket(c echo.Context) error {
 	}
 
 	// Generate ticket image
-	imageBuffer, err := generateTicket(event.Name, event.Location, event.Date, "[YOUR NAME]", input.Name)
+	imageBuffer, err := generateTicket(event.Name, event.Location, event.Date, "YOUR NAME", input.Name)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}
 
 	// Upload image.
 	key := fmt.Sprintf("%d/%s", input.EventId, "ticket-image.png")
-	imageUrl, err := irysService.UploadFile(key, imageBuffer, "image/png")
+	imageResponse, err := irysService.UploadFile(key, imageBuffer, "image/png")
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: err.Error()})
 	}
-	input.ImageUrl = imageUrl
+	input.ImageUrl = imageResponse.URL
 
 	ticket, err := ticketRepo.Create(input, claims.Id)
 	if err != nil {
@@ -66,7 +66,7 @@ func CreateTicket(c echo.Context) error {
 	metadata := service.MetadataInput{
 		Name:        ticket.Name,
 		Description: ticket.Description,
-		Image:       imageUrl,
+		Image:       "ipfs://" + imageResponse.ID,
 		Attributes: []map[string]interface{}{
 			{
 				"trait_type": "eventName",
@@ -83,19 +83,13 @@ func CreateTicket(c echo.Context) error {
 		},
 		Version: "1.0",
 	}
-	metadataUrl, err := irysService.UploadMetadata(metadata)
+	metadataResponse, err := irysService.UploadMetadata(metadata)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Message: err.Error()})
 	}
 
 	// Update token uri for ticket
-	_, err = ticketRepo.UpdateBaseTokenUri(ticket.ID, metadataUrl)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
-	}
-
-	// Update ticket with baseTokenUri
-	_, err = ticketRepo.UpdateBaseTokenUri(ticket.ID, metadataUrl)
+	_, err = ticketRepo.UpdateBaseTokenUri(ticket.ID, "ipfs://"+metadataResponse.ID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{Message: err.Error()})
 	}
