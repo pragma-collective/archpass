@@ -10,7 +10,7 @@ func main() {
 	// Start the ticket minter service
 	// note(jhudiel) - don't enable yet
 	// need to implement a processing status
-	//go startTicketMinter()
+	go startTicketMinter()
 
 	r.Logger.Fatal(r.Start(":8000"))
 }

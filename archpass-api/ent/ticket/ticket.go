@@ -22,6 +22,8 @@ const (
 	FieldTicketSlug = "ticket_slug"
 	// FieldMintPrice holds the string denoting the mint_price field in the database.
 	FieldMintPrice = "mint_price"
+	// FieldPriceInCents holds the string denoting the price_in_cents field in the database.
+	FieldPriceInCents = "price_in_cents"
 	// FieldQuantity holds the string denoting the quantity field in the database.
 	FieldQuantity = "quantity"
 	// FieldEventID holds the string denoting the event_id field in the database.
@@ -80,6 +82,7 @@ var Columns = []string{
 	FieldDescription,
 	FieldTicketSlug,
 	FieldMintPrice,
+	FieldPriceInCents,
 	FieldQuantity,
 	FieldEventID,
 	FieldTicketHash,
@@ -139,6 +142,11 @@ func ByTicketSlug(opts ...sql.OrderTermOption) OrderOption {
 // ByMintPrice orders the results by the mint_price field.
 func ByMintPrice(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMintPrice, opts...).ToFunc()
+}
+
+// ByPriceInCents orders the results by the price_in_cents field.
+func ByPriceInCents(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPriceInCents, opts...).ToFunc()
 }
 
 // ByQuantity orders the results by the quantity field.

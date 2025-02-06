@@ -31,7 +31,7 @@ var (
 
 // EventMetaData contains all meta data concerning the Event contract.
 var EventMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"name\":\"FailedDeployment\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"InsufficientBalance\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"ticketHash\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"clone\",\"type\":\"address\"}],\"name\":\"TicketCreated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"maxSupply\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"mintPrice\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"ticketHash\",\"type\":\"string\"}],\"name\":\"createTicket\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"ticketAddress\",\"type\":\"address\"}],\"name\":\"doesTicketExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"eventMinters\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"eventTickets\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"factoryAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_ticketFactory\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_factoryAddress\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"ticketAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"name\":\"mintNFT\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"ticketAddress\",\"type\":\"address\"}],\"name\":\"registerTicket\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"ticketHash\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"clone\",\"type\":\"address\"}],\"name\":\"TicketCreated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"ticketAddress\",\"type\":\"address\"}],\"name\":\"doesTicketExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"eventMinters\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"eventTickets\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"factoryAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_ticketFactory\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_factoryAddress\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"ticketAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"name\":\"mintNFT\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"ticketAddress\",\"type\":\"address\"}],\"name\":\"registerTicket\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // EventABI is the input ABI used to generate the binding from.
@@ -335,27 +335,6 @@ func (_Event *EventCallerSession) Owner() (common.Address, error) {
 	return _Event.Contract.Owner(&_Event.CallOpts)
 }
 
-// CreateTicket is a paid mutator transaction binding the contract method 0x271ba406.
-//
-// Solidity: function createTicket(string name, uint256 maxSupply, uint256 mintPrice, string ticketHash) returns(address)
-func (_Event *EventTransactor) CreateTicket(opts *bind.TransactOpts, name string, maxSupply *big.Int, mintPrice *big.Int, ticketHash string) (*types.Transaction, error) {
-	return _Event.contract.Transact(opts, "createTicket", name, maxSupply, mintPrice, ticketHash)
-}
-
-// CreateTicket is a paid mutator transaction binding the contract method 0x271ba406.
-//
-// Solidity: function createTicket(string name, uint256 maxSupply, uint256 mintPrice, string ticketHash) returns(address)
-func (_Event *EventSession) CreateTicket(name string, maxSupply *big.Int, mintPrice *big.Int, ticketHash string) (*types.Transaction, error) {
-	return _Event.Contract.CreateTicket(&_Event.TransactOpts, name, maxSupply, mintPrice, ticketHash)
-}
-
-// CreateTicket is a paid mutator transaction binding the contract method 0x271ba406.
-//
-// Solidity: function createTicket(string name, uint256 maxSupply, uint256 mintPrice, string ticketHash) returns(address)
-func (_Event *EventTransactorSession) CreateTicket(name string, maxSupply *big.Int, mintPrice *big.Int, ticketHash string) (*types.Transaction, error) {
-	return _Event.Contract.CreateTicket(&_Event.TransactOpts, name, maxSupply, mintPrice, ticketHash)
-}
-
 // Initialize is a paid mutator transaction binding the contract method 0xc0c53b8b.
 //
 // Solidity: function initialize(address _ticketFactory, address owner, address _factoryAddress) returns()
@@ -377,25 +356,25 @@ func (_Event *EventTransactorSession) Initialize(_ticketFactory common.Address, 
 	return _Event.Contract.Initialize(&_Event.TransactOpts, _ticketFactory, owner, _factoryAddress)
 }
 
-// MintNFT is a paid mutator transaction binding the contract method 0xeacabe14.
+// MintNFT is a paid mutator transaction binding the contract method 0x7c818f54.
 //
-// Solidity: function mintNFT(address ticketAddress, string tokenURI) payable returns(uint256)
-func (_Event *EventTransactor) MintNFT(opts *bind.TransactOpts, ticketAddress common.Address, tokenURI string) (*types.Transaction, error) {
-	return _Event.contract.Transact(opts, "mintNFT", ticketAddress, tokenURI)
+// Solidity: function mintNFT(address ticketAddress, address recipient, string tokenURI) payable returns(uint256)
+func (_Event *EventTransactor) MintNFT(opts *bind.TransactOpts, ticketAddress common.Address, recipient common.Address, tokenURI string) (*types.Transaction, error) {
+	return _Event.contract.Transact(opts, "mintNFT", ticketAddress, recipient, tokenURI)
 }
 
-// MintNFT is a paid mutator transaction binding the contract method 0xeacabe14.
+// MintNFT is a paid mutator transaction binding the contract method 0x7c818f54.
 //
-// Solidity: function mintNFT(address ticketAddress, string tokenURI) payable returns(uint256)
-func (_Event *EventSession) MintNFT(ticketAddress common.Address, tokenURI string) (*types.Transaction, error) {
-	return _Event.Contract.MintNFT(&_Event.TransactOpts, ticketAddress, tokenURI)
+// Solidity: function mintNFT(address ticketAddress, address recipient, string tokenURI) payable returns(uint256)
+func (_Event *EventSession) MintNFT(ticketAddress common.Address, recipient common.Address, tokenURI string) (*types.Transaction, error) {
+	return _Event.Contract.MintNFT(&_Event.TransactOpts, ticketAddress, recipient, tokenURI)
 }
 
-// MintNFT is a paid mutator transaction binding the contract method 0xeacabe14.
+// MintNFT is a paid mutator transaction binding the contract method 0x7c818f54.
 //
-// Solidity: function mintNFT(address ticketAddress, string tokenURI) payable returns(uint256)
-func (_Event *EventTransactorSession) MintNFT(ticketAddress common.Address, tokenURI string) (*types.Transaction, error) {
-	return _Event.Contract.MintNFT(&_Event.TransactOpts, ticketAddress, tokenURI)
+// Solidity: function mintNFT(address ticketAddress, address recipient, string tokenURI) payable returns(uint256)
+func (_Event *EventTransactorSession) MintNFT(ticketAddress common.Address, recipient common.Address, tokenURI string) (*types.Transaction, error) {
+	return _Event.Contract.MintNFT(&_Event.TransactOpts, ticketAddress, recipient, tokenURI)
 }
 
 // RegisterTicket is a paid mutator transaction binding the contract method 0xc1126a36.
@@ -459,27 +438,6 @@ func (_Event *EventSession) TransferOwnership(newOwner common.Address) (*types.T
 // Solidity: function transferOwnership(address newOwner) returns()
 func (_Event *EventTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _Event.Contract.TransferOwnership(&_Event.TransactOpts, newOwner)
-}
-
-// Withdraw is a paid mutator transaction binding the contract method 0x3ccfd60b.
-//
-// Solidity: function withdraw() returns()
-func (_Event *EventTransactor) Withdraw(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Event.contract.Transact(opts, "withdraw")
-}
-
-// Withdraw is a paid mutator transaction binding the contract method 0x3ccfd60b.
-//
-// Solidity: function withdraw() returns()
-func (_Event *EventSession) Withdraw() (*types.Transaction, error) {
-	return _Event.Contract.Withdraw(&_Event.TransactOpts)
-}
-
-// Withdraw is a paid mutator transaction binding the contract method 0x3ccfd60b.
-//
-// Solidity: function withdraw() returns()
-func (_Event *EventTransactorSession) Withdraw() (*types.Transaction, error) {
-	return _Event.Contract.Withdraw(&_Event.TransactOpts)
 }
 
 // EventInitializedIterator is returned from FilterInitialized and is used to iterate over the raw logs and unpacked data for Initialized events raised by the Event contract.

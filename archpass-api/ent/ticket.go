@@ -27,6 +27,8 @@ type Ticket struct {
 	TicketSlug string `json:"ticket_slug,omitempty"`
 	// MintPrice holds the value of the "mint_price" field.
 	MintPrice string `json:"mint_price,omitempty"`
+	// PriceInCents holds the value of the "price_in_cents" field.
+	PriceInCents int64 `json:"price_in_cents,omitempty"`
 	// Quantity holds the value of the "quantity" field.
 	Quantity int `json:"quantity,omitempty"`
 	// EventID holds the value of the "event_id" field.
@@ -102,7 +104,7 @@ func (*Ticket) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case ticket.FieldID, ticket.FieldQuantity, ticket.FieldEventID:
+		case ticket.FieldID, ticket.FieldPriceInCents, ticket.FieldQuantity, ticket.FieldEventID:
 			values[i] = new(sql.NullInt64)
 		case ticket.FieldName, ticket.FieldDescription, ticket.FieldTicketSlug, ticket.FieldMintPrice, ticket.FieldTicketHash, ticket.FieldImageURL, ticket.FieldBaseTokenURI, ticket.FieldContractAddress, ticket.FieldTransactionHash, ticket.FieldBlockNumber:
 			values[i] = new(sql.NullString)
@@ -152,6 +154,12 @@ func (t *Ticket) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field mint_price", values[i])
 			} else if value.Valid {
 				t.MintPrice = value.String
+			}
+		case ticket.FieldPriceInCents:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field price_in_cents", values[i])
+			} else if value.Valid {
+				t.PriceInCents = value.Int64
 			}
 		case ticket.FieldQuantity:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -275,6 +283,9 @@ func (t *Ticket) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("mint_price=")
 	builder.WriteString(t.MintPrice)
+	builder.WriteString(", ")
+	builder.WriteString("price_in_cents=")
+	builder.WriteString(fmt.Sprintf("%v", t.PriceInCents))
 	builder.WriteString(", ")
 	builder.WriteString("quantity=")
 	builder.WriteString(fmt.Sprintf("%v", t.Quantity))

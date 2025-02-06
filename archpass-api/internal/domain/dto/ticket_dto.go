@@ -1,6 +1,8 @@
 package dto
 
-import "time"
+import (
+	"time"
+)
 
 type CreateTicketInput struct {
 	Name            string `json:"name"`
@@ -8,6 +10,7 @@ type CreateTicketInput struct {
 	EventId         int    `json:"eventId"`
 	Quantity        int    `json:"quantity"`
 	MintPrice       string `json:"mintPrice"`
+	PriceInCents    int64  `json:"priceInCents"`
 	BaseTokenUri    string `json:"baseTokenUri"`
 	ImageUrl        string `json:"imageUrl"`
 	ContractAddress string `json:"contractAddress"`
